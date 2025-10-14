@@ -4,7 +4,7 @@ import Footer from '../Footer/Footer'
 
 const Layout = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   return (
-    <div>
+    <div className='relative w-screen h-screen'>
       <Navbar isAuthenticated={isAuthenticated} />
       <main>
         {/* Nội dung của các page sẽ được render ở đây */}

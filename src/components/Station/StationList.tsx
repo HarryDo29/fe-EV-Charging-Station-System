@@ -1,14 +1,15 @@
 import type { Station } from '../../types/station'
 import StationCard from './StationCard'
+import { useNavigate } from 'react-router-dom'
 
 interface StationListProps {
   stations: Station[]
   selectedStationId: number | null
   onStationSelect: (stationId: number) => void
-  onBooking: (stationId: number) => void
 }
 
-const StationList = ({ stations, selectedStationId, onStationSelect, onBooking }: StationListProps) => {
+const StationList = ({ stations, selectedStationId, onStationSelect }: StationListProps) => {
+  const navigate = useNavigate()
   return (
     <div
       className={`flex-1 overflow-y-auto p-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 min-h-0 rounded-b-4xl`}
@@ -42,7 +43,7 @@ const StationList = ({ stations, selectedStationId, onStationSelect, onBooking }
                 <div className='mt-2 px-4'>
                   <button
                     disabled={station.status === 'busy' || station.status === 'offline'}
-                    onClick={() => onBooking(station.id)}
+                    onClick={() => navigate(`/booking/${station.id}`)}
                     className='w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed'
                   >
                     Đặt lịch sạc
