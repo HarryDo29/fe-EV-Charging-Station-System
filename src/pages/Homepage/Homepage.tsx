@@ -12,8 +12,10 @@ import {
 import heroImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/hero-section.jpeg'
 import technologyImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/tinh-nang-cong-nghe.jpeg'
 import networkImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/mang-luoi-phu-song.jpeg'
+import { useNavigate } from 'react-router-dom'
 
 const Homepage = () => {
+  const navigate = useNavigate()
   return (
     <div className='w-full bg-white'>
       {/* Hero Section - Phần nổi bật nhất trang */}
@@ -34,11 +36,17 @@ const Homepage = () => {
               {/* Services */}
               <div className='flex flex-col sm:flex-row gap-4 pt-4'>
                 {/* Nút đặt lịch sạc */}
-                <button className='bg-white text-sky-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-sky-50 transition-all duration-300 shadow-lg'>
+                <button
+                  className='bg-white text-sky-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-sky-50 transition-all duration-300 shadow-lg'
+                  onClick={() => navigate('/map')}
+                >
                   Đặt Lịch Sạc Ngay
                 </button>
                 {/* Nút tìm hiểu thêm */}
-                <button className='border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-sky-600 transition-all duration-300'>
+                <button
+                  className='border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-sky-600 transition-all duration-300'
+                  onClick={() => navigate('/about')}
+                >
                   Tìm Hiểu Thêm
                 </button>
               </div>
