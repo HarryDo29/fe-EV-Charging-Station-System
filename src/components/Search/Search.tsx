@@ -1,6 +1,6 @@
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/react'
 import clsx from 'clsx'
-import type { Station } from '../../types/station'
+import type { Station } from '../../interface/station.interface'
 import { useState } from 'react'
 import { Check, Search as SearchIcon } from '@mui/icons-material'
 

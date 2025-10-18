@@ -1,4 +1,4 @@
-import type { ChargePoint } from '../../types/station'
+import type { ChargePoint } from '../../interface/chargePoint.interface'
 
 interface ChargePointCardProps {
   chargePoint: ChargePoint

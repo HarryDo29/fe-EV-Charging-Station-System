@@ -1,4 +1,4 @@
-import type { Vehicle } from '../../types/station'
+import type { Vehicle } from '../../interface/vehicle.interface'
 import { Close, LocalShipping, Label, CalendarToday, Bolt, Stars } from '@mui/icons-material'
 
 interface AddVehicleModalProps {

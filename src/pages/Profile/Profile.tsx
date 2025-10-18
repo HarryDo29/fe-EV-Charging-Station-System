@@ -4,7 +4,7 @@ import { transactions } from '../../data/mockTransaction'
 import { subscriptions } from '../../data/mockSubcriptions'
 import VehicleCard from '../../components/Vehicle/VehicleCard'
 import mockVehicles from '../../data/mockVehicles'
-import type { Vehicle } from '../../types/station'
+import type { Vehicle } from '../../interface/vehicle.interface'
 import AddVehicleModal from '../../components/Modal/AddVehicleModal'
 import { Avatar } from '@mui/material'
 import {

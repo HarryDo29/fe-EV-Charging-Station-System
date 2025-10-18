@@ -1,6 +1,7 @@
 import EVMap from '../../components/Map/Map'
 import { useState, useEffect } from 'react'
-import type { Coordinates, Station } from '../../types/station'
+import type { Station } from '../../interface/station.interface'
+import type { Coordinates } from '../../interface/coordinate.interface'
 import { mockStations } from '../../data/mockStations'
 import Search from '../../components/Search/Search'
 import StationList from '../../components/Station/StationList'
@@ -46,11 +47,6 @@ const Map = () => {
       }
     )
   }, [])
-
-  // // lấy stationId trong khu vực
-  // useEffect(() => {
-
-  // }, [location])
 
   //filter stations
   const filteredStations = (): Station[] => {

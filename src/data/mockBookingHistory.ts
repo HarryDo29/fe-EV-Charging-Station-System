@@ -1,4 +1,4 @@
-import type { ExistingBooking } from '../types/station'
+import type { ExistingBooking } from '../interface/existingBooking.interface'
 
 export const bookingHistory: ExistingBooking[] = [
   {

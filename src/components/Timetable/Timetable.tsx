@@ -1,4 +1,5 @@
-import type { SelectedSlot, WeeklyBookingDates } from '../../types/station'
+import type { SelectedSlot } from '../../interface/selectedSlot.interface'
+import type { WeeklyBookingDates } from '../../interface/weeklyBookingDate.interface'
 
 interface TimetableProps {
   getWeekDates: string[]

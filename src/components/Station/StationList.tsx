@@ -1,4 +1,4 @@
-import type { Station } from '../../types/station'
+import type { Station } from '../../interface/station.interface'
 import StationCard from './StationCard'
 import { useNavigate } from 'react-router-dom'
 

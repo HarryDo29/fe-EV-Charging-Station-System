@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { Station, ChargePoint, Vehicle, BookingData } from '../../types/station'
+import type { Station } from '../../interface/station.interface'
+import type { ChargePoint } from '../../interface/chargePoint.interface'
+import type { Vehicle } from '../../interface/vehicle.interface'
+import type { BookingData } from '../../interface/bookingData.interface'
 
 const Payment = () => {
   const navigate = useNavigate()

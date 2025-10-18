@@ -2,7 +2,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'rea
 import 'leaflet/dist/leaflet.css'
 import { useEffect } from 'react'
 import L from 'leaflet'
-import type { Coordinates, Station } from '../../types/station'
+import type { Coordinates } from '../../interface/coordinate.interface'
+import type { Station } from '../../interface/station.interface'
 
 // Fix default marker icon issue with Leaflet
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

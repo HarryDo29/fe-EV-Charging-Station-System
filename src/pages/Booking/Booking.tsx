@@ -1,7 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { mockStations } from '../../data/mockStations'
-import type { Station, Vehicle, ChargePoint, WeeklyBookingDates, SelectedSlot, BookingData } from '../../types/station'
+import type { Station } from '../../interface/station.interface'
+import type { ChargePoint } from '../../interface/chargePoint.interface'
+import type { Vehicle } from '../../interface/vehicle.interface'
+import type { WeeklyBookingDates } from '../../interface/weeklyBookingDate.interface'
+import type { SelectedSlot } from '../../interface/selectedSlot.interface'
+import type { BookingData } from '../../interface/bookingData.interface'
 import mockChargePoints from '../../data/mockChargePoints'
 import mockVehicles from '../../data/mockVehicles'
 import ChargePointList from '../../components/ChargePoint/ChargePointList'
@@ -23,9 +28,9 @@ const Booking = () => {
   const [selectedChargePoint, setSelectedChargePoint] = useState<ChargePoint | null>(null)
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([])
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0])
-  const [selectedTime, setSelectedTime] = useState<string>('')
-  const [weeklyBookings, setWeeklyBookings] = useState<WeeklyBookingDates>(mockWeeklyBookingDates)
+  const [selectedDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [selectedTime] = useState<string>('')
+  const [weeklyBookings] = useState<WeeklyBookingDates>(mockWeeklyBookingDates)
 
   // Modal state for adding new vehicle
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false)

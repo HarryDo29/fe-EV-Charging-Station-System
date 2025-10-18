@@ -1,4 +1,4 @@
-import type { Station } from '../types/station'
+import type { Station } from '../interface/station.interface'
 
 export const mockStations: Station[] = [
   {

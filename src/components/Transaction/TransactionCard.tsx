@@ -1,4 +1,4 @@
-import type { Transaction } from '../../types/station'
+import type { Transaction } from '../../interface/transaction.interface'
 
 const TransactionCard = ({ trans }: { trans: Transaction }) => {
   return (

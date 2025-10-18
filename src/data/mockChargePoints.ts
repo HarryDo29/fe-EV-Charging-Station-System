@@ -1,4 +1,4 @@
-import type { ChargePoint } from '../types/station'
+import type { ChargePoint } from '../interface/chargePoint.interface'
 
 const mockChargePoints: ChargePoint[] = [
   {

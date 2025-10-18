@@ -1,4 +1,4 @@
-import type { WeeklyBookingDates } from '../types/station'
+import type { WeeklyBookingDates } from '../interface/weeklyBookingDate.interface'
 
 const mockWeeklyBookings: WeeklyBookingDates = {
   // Thứ Hai, 13/10/2025
