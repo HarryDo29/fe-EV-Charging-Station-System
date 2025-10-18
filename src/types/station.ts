@@ -76,3 +76,20 @@ export interface Transaction {
   transactionId: string
   description: string
 }
+
+export interface WeeklyBookingDate {
+  id: number
+  chargePointId: number
+  startTime: string
+  endTime: string
+  vehicleName: string
+}
+
+export interface WeeklyBookingDates {
+  [key: string]: WeeklyBookingDate[]
+}
+
+export interface SelectedSlot {
+  date: string
+  time: string
+}

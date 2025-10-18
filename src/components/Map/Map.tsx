@@ -83,7 +83,7 @@ const createCustomIcon = (status?: string, isSelected?: boolean) => {
 
 export default function EVMap({ location, stations, selectedStationId, onStationSelect }: EVMapProps) {
   const center: [number, number] = location ? [location.lat, location.lng] : [10.84102, 106.80941]
-  const zoom = location ? 14 : 13
+  const zoom = location ? 9 : 10
   const selectedStation = stations.find((s) => s.id === selectedStationId) || null
 
   return (
@@ -100,7 +100,7 @@ export default function EVMap({ location, stations, selectedStationId, onStation
       {/* Nguồn bản đồ */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
-        url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        url='https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'
       />
 
       <MapController selectedStation={selectedStation} />

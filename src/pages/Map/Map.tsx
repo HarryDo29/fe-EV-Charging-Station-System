@@ -77,48 +77,50 @@ const Map = () => {
   }
 
   return (
-    <div className='w-screen h-screen'>
-      <EVMap
-        location={location}
-        stations={searchStations}
-        selectedStationId={selectedStationId}
-        onStationSelect={handleStationSelect}
-      />
-
-      <div
-        className={`absolute top-12 left-12 z-[1000] min-w-[400px] max-w-[600px] ${searchStations.length > 0 ? 'h-[calc(100vh-2rem)] max-h-[85vh] bg-white p-0 m-0' : ''} rounded-4xl shadow-lg flex flex-col`}
-      >
-        <Search
-          query={query}
-          setQuery={setQuery}
-          filteredStations={filteredStations}
-          setSelectedStationId={setSelectedStationId}
-          setSearchStations={setSearchStations}
+    <div className='container h-full mx-auto px-4 py-6 pt-16'>
+      <div className='relative w-full h-[calc(100vh-160px)] rounded-lg overflow-hidden shadow-xl'>
+        <EVMap
+          location={location}
+          stations={searchStations}
+          selectedStationId={selectedStationId}
+          onStationSelect={handleStationSelect}
         />
-        {searchStations.length > 0 && (
-          <StationList
-            stations={searchStations}
-            selectedStationId={selectedStationId}
-            onStationSelect={handleStationSelect}
-          />
-        )}
-      </div>
 
-      {/* Chú thích màu sắc của trạm sạc trên map (trạng thái của các trạm sạc) */}
-      <div className='absolute bottom-6 right-12 bg-white rounded-lg shadow-lg p-4 z-[1000]'>
-        <h3 className='font-semibold text-sm mb-2 text-gray-800'>Chú thích</h3>
-        <div className='space-y-2 text-xs'>
-          <div className='flex items-center'>
-            <div className='w-3 h-3 bg-green-500 rounded-full mr-2'></div>
-            <span className='text-gray-700'>Có sẵn</span>
-          </div>
-          <div className='flex items-center'>
-            <div className='w-3 h-3 bg-orange-500 rounded-full mr-2'></div>
-            <span className='text-gray-700'>Đang bận</span>
-          </div>
-          <div className='flex items-center'>
-            <div className='w-3 h-3 bg-red-500 rounded-full mr-2'></div>
-            <span className='text-gray-700'>Offline</span>
+        <div
+          className={`absolute top-6 left-6 z-[1000] min-w-[400px] max-w-[600px] ${searchStations.length > 0 ? 'h-[calc(100%-3rem)] max-h-[85%] bg-white p-0 m-0' : ''} rounded-4xl shadow-lg flex flex-col`}
+        >
+          <Search
+            query={query}
+            setQuery={setQuery}
+            filteredStations={filteredStations}
+            setSelectedStationId={setSelectedStationId}
+            setSearchStations={setSearchStations}
+          />
+          {searchStations.length > 0 && (
+            <StationList
+              stations={searchStations}
+              selectedStationId={selectedStationId}
+              onStationSelect={handleStationSelect}
+            />
+          )}
+        </div>
+
+        {/* Chú thích màu sắc của trạm sạc trên map (trạng thái của các trạm sạc) */}
+        <div className='absolute bottom-6 right-6 bg-white rounded-lg shadow-lg p-4 z-[1000]'>
+          <h3 className='font-semibold text-sm mb-2 text-gray-800'>Chú thích</h3>
+          <div className='space-y-2 text-xs'>
+            <div className='flex items-center'>
+              <div className='w-3 h-3 bg-green-500 rounded-full mr-2'></div>
+              <span className='text-gray-700'>Có sẵn</span>
+            </div>
+            <div className='flex items-center'>
+              <div className='w-3 h-3 bg-orange-500 rounded-full mr-2'></div>
+              <span className='text-gray-700'>Đang bận</span>
+            </div>
+            <div className='flex items-center'>
+              <div className='w-3 h-3 bg-red-500 rounded-full mr-2'></div>
+              <span className='text-gray-700'>Offline</span>
+            </div>
           </div>
         </div>
       </div>

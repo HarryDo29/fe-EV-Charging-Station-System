@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <div className='w-screen h-full p-0 m-0 flex items-center justify-center bg-gray-900'>
+    <div className='w-screen p-0 m-0 flex items-center justify-center bg-gray-900'>
       <footer className='container mx-auto bg-gray-900 text-gray-300'>
         {/* <!-- Main Footer Section --> */}
         <div className='w-full mx-auto px-4 py-12'>

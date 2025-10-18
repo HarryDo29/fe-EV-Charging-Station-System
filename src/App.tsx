@@ -7,9 +7,14 @@ import Map from './pages/Map/Map'
 import Booking from './pages/Booking/Booking'
 import Payment from './pages/Payment/Payment'
 import Profile from './pages/Profile/Profile'
+import AuthPage from './pages/Auth/AuthPage'
+import About from './pages/About/About'
+import Contact from './pages/Contact/Contact'
+import NotFound from './pages/NotFound/Notfound'
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true)
+  const [isAuthenticated] = useState(true)
+
   return (
     <div className='w-full min-h-screen'>
       <Routes>
@@ -20,7 +25,11 @@ function App() {
           <Route path='/booking/:stationId' element={<Booking />} />
           <Route path='/payment' element={<Payment />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/contact' element={<Contact />} />
         </Route>
+        <Route path='/auth' element={<AuthPage />} />
+        <Route path='*' element={<NotFound />} />
         {/* không sử dụng layout chung cho các page */}
       </Routes>
     </div>
