@@ -2,7 +2,7 @@ import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOptio
 import clsx from 'clsx'
 import type { Station } from '../../types/station'
 import { useState } from 'react'
-import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { Check, Search as SearchIcon } from '@mui/icons-material'
 
 const Search = ({
   query,
@@ -48,7 +48,7 @@ const Search = ({
             }}
           />
           <ComboboxButton className='group absolute inset-y-0 right-0 px-2.5'>
-            <MagnifyingGlassIcon
+            <SearchIcon
               className='size-6 fill-white/60 group-data-hover:fill-white'
               onClick={() => {
                 setQuery(query)
@@ -74,7 +74,7 @@ const Search = ({
               value={station}
               className='group flex cursor-default items-center gap-2 rounded-lg px-3 py-1.5 select-none data-focus:bg-white/10'
             >
-              <CheckIcon className='invisible size-4 fill-white group-data-selected:visible' />
+              <Check className='invisible size-4 fill-white group-data-selected:visible' />
               <div className='text-sm/6 text-black'>{station.name}</div>
             </ComboboxOption>
           ))}

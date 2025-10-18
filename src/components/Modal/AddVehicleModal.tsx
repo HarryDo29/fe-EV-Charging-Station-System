@@ -1,5 +1,5 @@
 import type { Vehicle } from '../../types/station'
-import { XMarkIcon, TruckIcon, TagIcon, CalendarIcon, BoltIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import { Close, LocalShipping, Label, CalendarToday, Bolt, Stars } from '@mui/icons-material'
 
 interface AddVehicleModalProps {
   vehicles: Vehicle[]
@@ -58,7 +58,7 @@ const AddVehicleModal = ({
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <div className='bg-white bg-opacity-20 p-2 rounded-lg backdrop-blur-sm'>
-                <TruckIcon className='w-6 h-6 text-white' />
+                <LocalShipping className='w-6 h-6 text-white' />
               </div>
               <div>
                 <h2 className='text-2xl font-bold text-white'>Thêm Xe Mới</h2>
@@ -69,7 +69,7 @@ const AddVehicleModal = ({
               onClick={() => setShowAddVehicleModal(false)}
               className='text-white hover:bg-white hover:bg-opacity-20 p-2 rounded-lg transition-all duration-300'
             >
-              <XMarkIcon className='w-6 h-6' />
+              <Close className='w-6 h-6' />
             </button>
           </div>
         </div>
@@ -80,7 +80,7 @@ const AddVehicleModal = ({
             {/* Tên xe */}
             <div className='group'>
               <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                <SparklesIcon className='w-4 h-4 text-sky-600' />
+                <Stars className='w-4 h-4 text-sky-600' />
                 Tên xe
               </label>
               <input
@@ -97,7 +97,7 @@ const AddVehicleModal = ({
               {/* Hãng xe */}
               <div className='group'>
                 <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                  <TagIcon className='w-4 h-4 text-sky-600' />
+                  <Label className='w-4 h-4 text-sky-600' />
                   Hãng xe
                 </label>
                 <input
@@ -112,7 +112,7 @@ const AddVehicleModal = ({
               {/* Mẫu xe */}
               <div className='group'>
                 <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                  <TruckIcon className='w-4 h-4 text-sky-600' />
+                  <LocalShipping className='w-4 h-4 text-sky-600' />
                   Mẫu xe
                 </label>
                 <input
@@ -128,7 +128,7 @@ const AddVehicleModal = ({
             {/* Năm sản xuất */}
             <div className='group'>
               <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                <CalendarIcon className='w-4 h-4 text-sky-600' />
+                <CalendarToday className='w-4 h-4 text-sky-600' />
                 Năm sản xuất
               </label>
               <input
@@ -146,7 +146,7 @@ const AddVehicleModal = ({
               {/* Dung lượng pin */}
               <div className='group'>
                 <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                  <BoltIcon className='w-4 h-4 text-sky-600' />
+                  <Bolt className='w-4 h-4 text-sky-600' />
                   Pin (kWh)
                 </label>
                 <input

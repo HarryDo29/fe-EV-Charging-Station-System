@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { HomeIcon, MapPinIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { Home, LocationOn, ArrowBack } from '@mui/icons-material'
 
 const NotFound = () => {
   return (
@@ -50,14 +50,14 @@ const NotFound = () => {
         <div className='flex flex-col sm:flex-row gap-4 justify-center mb-12'>
           <Link to='/'>
             <button className='group bg-gradient-to-r from-sky-600 to-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:from-sky-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2'>
-              <HomeIcon className='w-6 h-6' />
+              <Home className='w-6 h-6' />
               Về Trang Chủ
             </button>
           </Link>
 
           <Link to='/map'>
             <button className='group border-2 border-sky-600 text-sky-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-sky-600 hover:text-white transition-all duration-300 flex items-center justify-center gap-2'>
-              <MapPinIcon className='w-6 h-6' />
+              <LocationOn className='w-6 h-6' />
               Tìm Trạm Sạc
             </button>
           </Link>
@@ -71,7 +71,7 @@ const NotFound = () => {
               to='/'
               className='group p-4 rounded-lg bg-gradient-to-br from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100 transition-all duration-300 hover:shadow-md'
             >
-              <HomeIcon className='w-8 h-8 text-sky-600 mx-auto mb-2 group-hover:scale-110 transition-transform' />
+              <Home className='w-8 h-8 text-sky-600 mx-auto mb-2 group-hover:scale-110 transition-transform' />
               <p className='text-sm font-semibold text-gray-700'>Trang Chủ</p>
             </Link>
 
@@ -79,7 +79,7 @@ const NotFound = () => {
               to='/map'
               className='group p-4 rounded-lg bg-gradient-to-br from-sky-50 to-blue-50 hover:from-sky-100 hover:to-blue-100 transition-all duration-300 hover:shadow-md'
             >
-              <MapPinIcon className='w-8 h-8 text-sky-600 mx-auto mb-2 group-hover:scale-110 transition-transform' />
+              <LocationOn className='w-8 h-8 text-sky-600 mx-auto mb-2 group-hover:scale-110 transition-transform' />
               <p className='text-sm font-semibold text-gray-700'>Đặt Lịch</p>
             </Link>
 
@@ -131,7 +131,7 @@ const NotFound = () => {
             onClick={() => window.history.back()}
             className='text-sky-600 hover:text-sky-700 font-semibold flex items-center gap-2 mx-auto group transition-all duration-300'
           >
-            <ArrowLeftIcon className='w-5 h-5 group-hover:-translate-x-1 transition-transform' />
+            <ArrowBack className='w-5 h-5 group-hover:-translate-x-1 transition-transform' />
             Quay lại trang trước
           </button>
         </div>

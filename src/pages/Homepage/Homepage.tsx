@@ -1,14 +1,14 @@
 import {
-  BoltIcon,
-  ClockIcon,
-  MapPinIcon,
-  ShieldCheckIcon,
-  CurrencyDollarIcon,
-  DevicePhoneMobileIcon,
-  ChartBarIcon,
-  CloudIcon,
-  BanknotesIcon
-} from '@heroicons/react/24/outline'
+  Bolt,
+  AccessTime,
+  LocationOn,
+  VerifiedUser,
+  AttachMoney,
+  PhoneAndroid,
+  BarChart,
+  Cloud,
+  Payments
+} from '@mui/icons-material'
 import heroImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/hero-section.jpeg'
 import technologyImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/tinh-nang-cong-nghe.jpeg'
 import networkImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/mang-luoi-phu-song.jpeg'
@@ -95,7 +95,7 @@ const Homepage = () => {
           <div className='grid md:grid-cols-3 gap-8'>
             <div className='bg-gradient-to-br from-sky-50 to-blue-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sky-100'>
               <div className='bg-sky-600 w-16 h-16 rounded-full flex items-center justify-center mb-6'>
-                <ClockIcon className='w-8 h-8 text-white' />
+                <AccessTime className='w-8 h-8 text-white' />
               </div>
               <h3 className='text-2xl font-bold text-gray-800 mb-4'>Đặt Lịch Linh Hoạt</h3>
               <p className='text-gray-600 leading-relaxed'>
@@ -106,7 +106,7 @@ const Homepage = () => {
 
             <div className='bg-gradient-to-br from-sky-50 to-blue-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sky-100'>
               <div className='bg-sky-600 w-16 h-16 rounded-full flex items-center justify-center mb-6'>
-                <MapPinIcon className='w-8 h-8 text-white' />
+                <LocationOn className='w-8 h-8 text-white' />
               </div>
               <h3 className='text-2xl font-bold text-gray-800 mb-4'>Mọi Lúc, Mọi Nơi</h3>
               <p className='text-gray-600 leading-relaxed'>
@@ -117,7 +117,7 @@ const Homepage = () => {
 
             <div className='bg-gradient-to-br from-sky-50 to-blue-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-sky-100'>
               <div className='bg-sky-600 w-16 h-16 rounded-full flex items-center justify-center mb-6'>
-                <BoltIcon className='w-8 h-8 text-white' />
+                <Bolt className='w-8 h-8 text-white' />
               </div>
               <h3 className='text-2xl font-bold text-gray-800 mb-4'>Sạc Nhanh Siêu Tốc</h3>
               <p className='text-gray-600 leading-relaxed'>
@@ -142,7 +142,7 @@ const Homepage = () => {
           <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <CurrencyDollarIcon className='w-7 h-7 text-sky-600' />
+                <AttachMoney className='w-7 h-7 text-sky-600' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>Tiết Kiệm Chi Phí</h4>
               <p className='text-gray-600 text-sm'>Chi phí sạc thấp hơn 60% so với xăng dầu truyền thống</p>
@@ -150,7 +150,7 @@ const Homepage = () => {
 
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <ShieldCheckIcon className='w-7 h-7 text-sky-600' />
+                <VerifiedUser className='w-7 h-7 text-sky-600' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>An Toàn Tuyệt Đối</h4>
               <p className='text-gray-600 text-sm'>Hệ thống bảo vệ quá tải, chống rò rỉ điện và giám sát 24/7</p>
@@ -158,7 +158,7 @@ const Homepage = () => {
 
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <DevicePhoneMobileIcon className='w-7 h-7 text-sky-600' />
+                <PhoneAndroid className='w-7 h-7 text-sky-600' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>Ứng Dụng Thông Minh</h4>
               <p className='text-gray-600 text-sm'>Quản lý lịch sạc, thanh toán và theo dõi tiến độ trên điện thoại</p>
@@ -166,7 +166,7 @@ const Homepage = () => {
 
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <CloudIcon className='w-7 h-7 text-sky-600' />
+                <Cloud className='w-7 h-7 text-sky-600' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>Thân Thiện Môi Trường</h4>
               <p className='text-gray-600 text-sm'>Giảm 100% khí thải CO2, góp phần bảo vệ hành tinh xanh</p>
@@ -176,7 +176,7 @@ const Homepage = () => {
           <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-10 pl-30 pr-30'>
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <BanknotesIcon className='w-12 h-12 text-sky-600 mx-auto mb-3' />
+                <Payments className='w-12 h-12 text-sky-600 mx-auto mb-3' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>2,500đ/kWh</h4>
               <p className='text-gray-600 text-sm'>Giá sạc cạnh tranh nhất thị trường</p>
@@ -184,7 +184,7 @@ const Homepage = () => {
 
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <ChartBarIcon className='w-12 h-12 text-sky-600 mx-auto mb-3' />
+                <BarChart className='w-12 h-12 text-sky-600 mx-auto mb-3' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>99.9%</h4>
               <p className='text-gray-600 text-sm'>Thời gian hoạt động ổn định</p>
@@ -192,7 +192,7 @@ const Homepage = () => {
 
             <div className='bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 text-center'>
               <div className='bg-sky-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4'>
-                <BoltIcon className='w-12 h-12 text-sky-600 mx-auto mb-3' />
+                <Bolt className='w-12 h-12 text-sky-600 mx-auto mb-3' />
               </div>
               <h4 className='text-lg font-bold text-gray-800 mb-2'>150 kW</h4>
               <p className='text-gray-600 text-sm'>Công suất sạc tối đa</p>
