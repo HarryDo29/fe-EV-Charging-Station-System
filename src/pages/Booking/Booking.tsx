@@ -10,7 +10,6 @@ import ChargePointList from '../../components/ChargePoint/ChargePointList'
 import Timetable from '../../components/Timetable/Timetable'
 import VehicleCard from '../../components/Vehicle/VehicleCard'
 import AddVehicleModal from '../../components/Modal/AddVehicleModal'
-import mockWeeklyBookingDates from '../../data/mockWeeklyBookingDates'
 import { fetchStationById } from '../../apis/stationApis'
 import { fetchChargePointsByStationId } from '../../apis/chargePointApi'
 import { fetchOwnVehicles } from '../../apis/vehicleApi'
@@ -127,7 +126,7 @@ const Booking = () => {
       }
     }
     fetchVehicles()
-  }, [stationId])
+  }, [stationId, vehicles])
 
   useEffect(() => {
     const fetchReservations = async () => {

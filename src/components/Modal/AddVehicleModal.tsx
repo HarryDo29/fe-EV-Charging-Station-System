@@ -34,6 +34,7 @@ const AddVehicleModal = ({
         if (response.statusCode === 200) {
           setVehicles([...vehicles, response.data])
         }
+        console.log('vehicles', vehicles)
       } catch (error) {
         console.log('addVehicle error', error)
       }

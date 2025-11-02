@@ -14,7 +14,7 @@ const VehicleCard = ({ vehicle, selectedVehicle }: VehicleProps) => {
       <div>
         <div className='flex items-center'>
           <h3 className='text-xl font-bold text-gray-900 p-2'>
-            {vehicle.car_maker} {vehicle.model}
+            {vehicle.car_maker} {vehicle.models}
           </h3>
 
           {/* License plate */}
