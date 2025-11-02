@@ -2,8 +2,8 @@ import type { ConnectorType } from '../constants/connectorType'
 import { StationStatus } from '../constants/stationStatus'
 
 export interface ChargePoint {
-  id: number
-  identifer: string
+  id: string
+  identifier: string
   connector_type: ConnectorType
   maxPowerKw: number
   pricePerKwh: number

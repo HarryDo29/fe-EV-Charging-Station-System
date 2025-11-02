@@ -3,6 +3,8 @@ import { Person, Mail, Notifications, Settings, Logout } from '@mui/icons-materi
 import { useCookies } from 'react-cookie'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAuth from '../../context/AuthContext/useAuth'
+import { fetchLogout } from '../../apis/authApis'
 
 const menuItems = [
   { icon: Person, label: 'Hồ sơ', url: '/profile', action: () => console.log('Xem hồ sơ') },
@@ -17,6 +19,28 @@ const AccountDropDown = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+
+  const [cookies] = useCookies(['driver_account'])
+  console.log(cookies.driver_account)
+
+  const { logOut } = useAuth()
+  const handleLogout = async () => {
+    console.log('handleLogout')
+
+    try {
+      const response = await fetchLogout()
+      console.log('response', response)
+
+      if (response.statusCode === 201) {
+        console.log('logged out')
+
+        logOut()
+        navigate(`/`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,8 +61,8 @@ const AccountDropDown = () => {
       {/* Avatar */}
       <div className='cursor-pointer'>
         <Avatar
-          alt='Harry_Do'
-          src='/assets/Avata/avt_HarryDo.jpeg'
+          alt={cookies.driver_account.full_name ?? 'Harry_Do'}
+          src={cookies.driver_account.avatar_url}
           sx={{ width: 45, height: 45 }}
           onClick={() => setIsOpen(true)}
         />
@@ -48,8 +72,8 @@ const AccountDropDown = () => {
       {isOpen && (
         <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50'>
           <div className='px-4 py-3 border-b border-gray-200'>
-            <p className='text-sm text-gray-600'>Harry Do</p>
-            <p className='text-sm text-gray-600'>harrydo@gmail.com</p>
+            <p className='text-sm text-gray-600'>{cookies.driver_account.full_name}</p>
+            <p className='text-sm text-gray-600'>{cookies.driver_account.email}</p>
           </div>
           <div className='py-1'>
             {menuItems.map((item, index) => (
@@ -60,6 +84,10 @@ const AccountDropDown = () => {
                   if (item.url === '/settings') {
                     setCookie('profile', 'settings')
                     navigate(`/profile`)
+                    return
+                  } else if (item.url === '/logout') {
+                    handleLogout()
+                    navigate('/auth')
                     return
                   }
                   navigate(item.url)

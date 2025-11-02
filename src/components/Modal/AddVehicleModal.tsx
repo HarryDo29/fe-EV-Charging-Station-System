@@ -1,12 +1,13 @@
-import type { Vehicle } from '../../interface/vehicle.interface'
-import { Close, LocalShipping, Label, CalendarToday, Bolt, Stars } from '@mui/icons-material'
+import type { AddVehicle, Vehicle } from '../../interface/vehicle.interface'
+import { ConnectorType } from '../../constants/connectorType'
+import { Close, LocalShipping, CalendarToday, Bolt, Stars, Power as PowerIcon } from '@mui/icons-material'
+import { addVehicle } from '../../apis/vehicleApi'
 
 interface AddVehicleModalProps {
   vehicles: Vehicle[]
-  newVehicle: Vehicle
+  newVehicle: AddVehicle
   setVehicles: (vehicles: Vehicle[]) => void
-  setSelectedVehicle: (vehicle: Vehicle) => void
-  setNewVehicle: (vehicle: Vehicle) => void
+  setNewVehicle: (vehicle: AddVehicle) => void
   setShowAddVehicleModal: (show: boolean) => void
 }
 
@@ -15,32 +16,39 @@ const AddVehicleModal = ({
   newVehicle,
   setNewVehicle,
   setVehicles,
-  setSelectedVehicle,
   setShowAddVehicleModal
 }: AddVehicleModalProps) => {
-  const handleAddVehicle = () => {
-    if (newVehicle.name && newVehicle.brand && newVehicle.model && newVehicle.batteryCapacity > 0) {
-      const vehicle: Vehicle = {
-        id: Date.now().toString(),
-        name: newVehicle.name,
-        brand: newVehicle.brand,
-        model: newVehicle.model,
-        year: newVehicle.year,
-        batteryCapacity: newVehicle.batteryCapacity,
-        connectorType: newVehicle.connectorType
+  const handleAddVehicle = async () => {
+    if (newVehicle.car_maker && newVehicle.license_plate && newVehicle.models && newVehicle.battery_capacity_kwh > 0) {
+      const vehicle: AddVehicle = {
+        car_maker: newVehicle.car_maker,
+        license_plate: newVehicle.license_plate,
+        models: newVehicle.models,
+        battery_capacity_kwh: newVehicle.battery_capacity_kwh,
+        connector_type: newVehicle.connector_type,
+        charging_power_kw: newVehicle.charging_power_kw,
+        status: true
+      } as AddVehicle
+      try {
+        const response = await addVehicle(vehicle)
+        if (response.statusCode === 200) {
+          setVehicles([...vehicles, response.data])
+        }
+      } catch (error) {
+        console.log('addVehicle error', error)
       }
-      setVehicles([...vehicles, vehicle])
-      setSelectedVehicle(vehicle)
       setShowAddVehicleModal(false)
       setNewVehicle({
-        id: '',
-        name: '',
-        brand: '',
-        model: '',
-        year: new Date().getFullYear(),
-        batteryCapacity: 0,
-        connectorType: ''
-      })
+        car_maker: '',
+        license_plate: '',
+        models: '',
+        battery_capacity_kwh: 0,
+        connector_type: null,
+        charging_power_kw: 0,
+        status: true
+      } as AddVehicle)
+    } else {
+      alert('Vui lòng điền đầy đủ thông tin xe')
     }
   }
 
@@ -77,16 +85,16 @@ const AddVehicleModal = ({
         {/* Form Content */}
         <div className='p-6 max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-sky-200 scrollbar-track-gray-100'>
           <div className='space-y-5'>
-            {/* Tên xe */}
+            {/* Hãng xe */}
             <div className='group'>
               <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
                 <Stars className='w-4 h-4 text-sky-600' />
-                Tên xe
+                Hãng xe
               </label>
               <input
                 type='text'
-                value={newVehicle.name}
-                onChange={(e) => setNewVehicle({ ...newVehicle, name: e.target.value })}
+                value={newVehicle.car_maker}
+                onChange={(e) => setNewVehicle({ ...newVehicle, car_maker: e.target.value })}
                 placeholder='VD: Tesla Model 3 của tôi'
                 className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
               />
@@ -94,21 +102,6 @@ const AddVehicleModal = ({
 
             {/* Grid 2 columns for Brand and Model */}
             <div className='grid grid-cols-2 gap-4'>
-              {/* Hãng xe */}
-              <div className='group'>
-                <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                  <Label className='w-4 h-4 text-sky-600' />
-                  Hãng xe
-                </label>
-                <input
-                  type='text'
-                  value={newVehicle.brand}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, brand: e.target.value })}
-                  placeholder='VD: Tesla'
-                  className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
-                />
-              </div>
-
               {/* Mẫu xe */}
               <div className='group'>
                 <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
@@ -117,26 +110,40 @@ const AddVehicleModal = ({
                 </label>
                 <input
                   type='text'
-                  value={newVehicle.model}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })}
+                  value={newVehicle.models}
+                  onChange={(e) => setNewVehicle({ ...newVehicle, models: e.target.value })}
                   placeholder='VD: Model 3'
+                  className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
+                />
+              </div>
+
+              <div className='group'>
+                <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
+                  <svg className='w-4 h-4 text-sky-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 10V3L4 14h7v7l9-11h-7z' />
+                  </svg>
+                  Cổng sạc
+                </label>
+                <input
+                  type='text'
+                  value={newVehicle.connector_type || 'Chọn cổng sạc'}
+                  onChange={(e) => setNewVehicle({ ...newVehicle, connector_type: e.target.value as ConnectorType })}
+                  placeholder={Object.values(ConnectorType).join(', ').toString()}
                   className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
                 />
               </div>
             </div>
 
-            {/* Năm sản xuất */}
+            {/* Biển số xe */}
             <div className='group'>
               <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
                 <CalendarToday className='w-4 h-4 text-sky-600' />
-                Năm sản xuất
+                Biển số xe
               </label>
               <input
-                type='number'
-                value={newVehicle.year}
-                onChange={(e) => setNewVehicle({ ...newVehicle, year: parseInt(e.target.value) })}
-                min='2000'
-                max={new Date().getFullYear() + 1}
+                type='text'
+                value={newVehicle.license_plate}
+                onChange={(e) => setNewVehicle({ ...newVehicle, license_plate: e.target.value })}
                 className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
               />
             </div>
@@ -151,8 +158,8 @@ const AddVehicleModal = ({
                 </label>
                 <input
                   type='number'
-                  value={newVehicle.batteryCapacity || ''}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, batteryCapacity: parseFloat(e.target.value) })}
+                  value={newVehicle.battery_capacity_kwh || ''}
+                  onChange={(e) => setNewVehicle({ ...newVehicle, battery_capacity_kwh: parseFloat(e.target.value) })}
                   placeholder='VD: 60'
                   className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
                 />
@@ -161,16 +168,14 @@ const AddVehicleModal = ({
               {/* Loại cổng sạc */}
               <div className='group'>
                 <label className='flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2'>
-                  <svg className='w-4 h-4 text-sky-600' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 10V3L4 14h7v7l9-11h-7z' />
-                  </svg>
-                  Cổng sạc
+                  <PowerIcon fontSize='small' className='w-4 h-4 text-sky-600' />
+                  Công suất sạc (kW)
                 </label>
                 <input
-                  type='text'
-                  value={newVehicle.connectorType}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, connectorType: e.target.value })}
-                  placeholder='Type 2, CCS2'
+                  type='number'
+                  value={newVehicle.charging_power_kw || ''}
+                  onChange={(e) => setNewVehicle({ ...newVehicle, charging_power_kw: parseFloat(e.target.value) })}
+                  placeholder='VD: 100'
                   className='w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all duration-300 hover:border-sky-300 bg-gray-50 focus:bg-white'
                 />
               </div>

@@ -1,4 +1,5 @@
 export interface SelectedSlot {
   date: string
-  time: string
+  start_time: string
+  end_time: string
 }

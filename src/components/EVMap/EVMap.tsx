@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import L from 'leaflet'
 import type { Coordinates } from '../../interface/coordinate.interface'
 import type { Station } from '../../interface/station.interface'
+import { StationStatus } from '../../constants/stationStatus'
 
 // Fix default marker icon issue with Leaflet
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,8 +18,8 @@ L.Icon.Default.mergeOptions({
 interface EVMapProps {
   location: Coordinates | null
   stations: Station[]
-  selectedStationId: number | null
-  onStationSelect: (stationId: number) => void
+  selectedStationId: string | null
+  onStationSelect: (stationId: string) => void
 }
 
 // Component to handle map centering
@@ -27,7 +28,7 @@ function MapController({ selectedStation }: { selectedStation: Station | null })
 
   useEffect(() => {
     if (selectedStation) {
-      map.flyTo([selectedStation.lat, selectedStation.lng], 16, {
+      map.flyTo([selectedStation.latitude, selectedStation.longitude], 16, {
         duration: 1
       })
     }
@@ -38,14 +39,14 @@ function MapController({ selectedStation }: { selectedStation: Station | null })
 
 const getStatusColor = (status?: string) => {
   switch (status) {
-    case 'available':
+    case StationStatus.AVAILABLE:
       return 'green'
-    case 'busy':
-      return 'orange'
-    case 'offline':
+    case StationStatus.UNAVAILABLE:
       return 'red'
-    default:
+    case StationStatus.MAINTENANCE:
       return 'blue'
+    default:
+      return 'gray'
   }
 }
 
@@ -85,7 +86,7 @@ const createCustomIcon = (status?: string, isSelected?: boolean) => {
 export default function EVMap({ location, stations, selectedStationId, onStationSelect }: EVMapProps) {
   const center: [number, number] = location ? [location.lat, location.lng] : [10.84102, 106.80941]
   const zoom = location ? 9 : 10
-  const selectedStation = stations.find((s) => s.id === selectedStationId) || null
+  const selectedStation = stations.find((s) => s.id === selectedStationId?.toString()) || null
 
   return (
     <MapContainer center={center} zoom={zoom} zoomControl={false} style={{ height: '100%', width: '100%' }}>
@@ -117,8 +118,8 @@ export default function EVMap({ location, stations, selectedStationId, onStation
       {stations.map((station) => (
         <Marker
           key={station.id}
-          position={[station.lat, station.lng]}
-          icon={createCustomIcon(station.status, station.id === selectedStationId)}
+          position={[station.latitude, station.longitude]}
+          icon={createCustomIcon(station.status, station.id === selectedStationId?.toString())}
           eventHandlers={{
             click: () => {
               onStationSelect(station.id)
@@ -133,23 +134,19 @@ export default function EVMap({ location, stations, selectedStationId, onStation
                 <p>
                   <span className='font-semibold'>Trạng thái: </span>
                   <span
-                    className={`font-medium ${station.status === 'available' ? 'text-green-600' : station.status === 'busy' ? 'text-yellow-600' : 'text-red-600'}`}
+                    className={`font-medium ${station.status === StationStatus.AVAILABLE ? 'text-green-600' : station.status === StationStatus.UNAVAILABLE ? 'text-yellow-600' : 'text-red-600'}`}
                   >
-                    {station.status === 'available' ? 'Có sẵn' : station.status === 'busy' ? 'Đang bận' : 'Offline'}
+                    {station.status === StationStatus.AVAILABLE
+                      ? 'Có sẵn'
+                      : station.status === StationStatus.UNAVAILABLE
+                        ? 'Đang bận'
+                        : 'Offline'}
                   </span>
                 </p>
-                {station.totalChargers && (
-                  <p>
-                    <span className='font-semibold'>Trạm sạc: </span>
-                    {station.availableChargers || 0}/{station.totalChargers}
-                  </p>
-                )}
-                {station.price && (
-                  <p>
-                    <span className='font-semibold'>Giá: </span>
-                    {station.price.toLocaleString()} đ/kWh
-                  </p>
-                )}
+                <p>
+                  <span className='font-semibold'>Trạm sạc: </span>
+                  {station.availableChargPoints || 0}/{station.totalChargPoints}
+                </p>
               </div>
             </div>
           </Popup>

@@ -1,11 +1,12 @@
-import type { Station } from '../../interface/station.interface'
+import { StationStatus } from '../../../constants/stationStatus'
+import type { Station } from '../../../interface/station.interface'
 import StationCard from './StationCard'
 import { useNavigate } from 'react-router-dom'
 
 interface StationListProps {
   stations: Station[]
-  selectedStationId: number | null
-  onStationSelect: (stationId: number) => void
+  selectedStationId: string | null
+  onStationSelect: (stationId: string) => void
 }
 
 const StationList = ({ stations, selectedStationId, onStationSelect }: StationListProps) => {
@@ -42,7 +43,7 @@ const StationList = ({ stations, selectedStationId, onStationSelect }: StationLi
               {selectedStationId === station.id && (
                 <div className='mt-2 px-4'>
                   <button
-                    disabled={station.status === 'busy' || station.status === 'offline'}
+                    disabled={station.status === StationStatus.UNAVAILABLE}
                     onClick={() => navigate(`/booking/${station.id}`)}
                     className='w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed'
                   >

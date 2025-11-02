@@ -59,13 +59,14 @@ const Profile = () => {
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false)
   const [newVehicle, setNewVehicle] = useState<Vehicle>({
     id: '',
-    name: '',
-    brand: '',
+    car_maker: '',
+    license_plate: '',
     model: '',
-    year: new Date().getFullYear(),
-    batteryCapacity: 0.0,
-    connectorType: ''
-  })
+    battery_capacity_kwh: 0,
+    connector_type: null,
+    charging_power_kw: 0,
+    status: false
+  } as Vehicle)
 
   console.log(cookies.profile)
 

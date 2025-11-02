@@ -48,11 +48,11 @@ const TransactionCard = ({ trans }: { trans: Transaction }) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm'>
           <div>
             <p className='text-gray-500 mb-1'>Mã giao dịch</p>
-            <p className='font-medium text-gray-800 font-mono text-xs'>{trans.transactionId}</p>
+            <p className='font-medium text-gray-800 font-mono text-xs'>{trans.order_code}</p>
           </div>
           <div>
             <p className='text-gray-500 mb-1'>Mô tả</p>
-            <p className='text-gray-800'>{trans.description}</p>
+            <p className='text-gray-800'>{trans.type}</p>
           </div>
         </div>
       </div>

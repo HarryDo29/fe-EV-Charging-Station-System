@@ -3,11 +3,7 @@ import logo from '../../../public/EV-logo-black.svg'
 import AccountDropDown from '../AccountDropDown/AccountDropDown'
 import NotiDropDown from '../NotiDropDown/NotiDropDown'
 
-type NavbarHeaderProps = {
-  isAuthenticated: boolean
-}
-
-const NavbarHeader = ({ isAuthenticated }: NavbarHeaderProps) => {
+const NavbarHeader = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
   const navigate = useNavigate()
 
   return (

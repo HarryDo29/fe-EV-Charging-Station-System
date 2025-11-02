@@ -1,50 +1,57 @@
+import { ConnectorType } from '../constants/connectorType'
+import { StationStatus } from '../constants/stationStatus'
 import type { ChargePoint } from '../interface/chargePoint.interface'
 
 const mockChargePoints: ChargePoint[] = [
   {
     id: 1,
-    name: 'Cổng sạc A1',
-    type: 'AC',
-    power: 7.4,
-    status: 'available',
-    connectorType: 'Type 2',
-    price: 3500
+    identifer: 'Cổng sạc A1',
+    connector_type: ConnectorType.TYPE1,
+    maxPowerKw: 7.4,
+    pricePerKwh: 3500,
+    ParkingFeePerHour: 10000,
+    reserved_status: false,
+    status: StationStatus.AVAILABLE
   },
   {
     id: 2,
-    name: 'Cổng sạc A2',
-    type: 'AC',
-    power: 11,
-    status: 'available',
-    connectorType: 'Type 2',
-    price: 3500
+    identifer: 'Cổng sạc A2',
+    connector_type: ConnectorType.TYPE2,
+    maxPowerKw: 11,
+    pricePerKwh: 3500,
+    ParkingFeePerHour: 10000,
+    reserved_status: false,
+    status: StationStatus.AVAILABLE
   },
   {
     id: 3,
-    name: 'Cổng sạc DC1',
-    type: 'DC',
-    power: 50,
-    status: 'available',
-    connectorType: 'CCS2',
-    price: 4500
+    identifer: 'Cổng sạc DC1',
+    connector_type: ConnectorType.CCS2,
+    maxPowerKw: 50,
+    pricePerKwh: 4500,
+    ParkingFeePerHour: 10000,
+    reserved_status: false,
+    status: StationStatus.AVAILABLE
   },
   {
     id: 4,
-    name: 'Cổng sạc DC2',
-    type: 'DC',
-    power: 120,
-    status: 'occupied',
-    connectorType: 'CCS2',
-    price: 5500
+    identifer: 'Cổng sạc DC2',
+    connector_type: ConnectorType.CCS2,
+    maxPowerKw: 120,
+    pricePerKwh: 5500,
+    ParkingFeePerHour: 10000,
+    reserved_status: false,
+    status: StationStatus.AVAILABLE
   },
   {
     id: 5,
-    name: 'Cổng sạc DC3',
-    type: 'DC',
-    power: 180,
-    status: 'available',
-    connectorType: 'CCS2',
-    price: 6500
+    identifer: 'Cổng sạc DC3',
+    connector_type: ConnectorType.CCS2,
+    maxPowerKw: 180,
+    pricePerKwh: 6500,
+    ParkingFeePerHour: 10000,
+    reserved_status: false,
+    status: StationStatus.AVAILABLE
   }
 ]
 

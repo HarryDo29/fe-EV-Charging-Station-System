@@ -11,7 +11,8 @@ export interface Station {
   status: StationStatus
   connectorTypes: ConnectorType[]
   powerKw: number
-  pricePerKwh: number
-  totalChargPoints: number
-  availableChargPoints: number
+  pricePerKwh: number | null
+  totalChargePoints: number
+  availableChargePoints: number
+  rating?: number
 }

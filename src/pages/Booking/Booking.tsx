@@ -1,19 +1,21 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { mockStations } from '../../data/mockStations'
 import type { Station } from '../../interface/station.interface'
 import type { ChargePoint } from '../../interface/chargePoint.interface'
-import type { Vehicle } from '../../interface/vehicle.interface'
-import type { WeeklyBookingDates } from '../../interface/weeklyBookingDate.interface'
+import type { AddVehicle, Vehicle } from '../../interface/vehicle.interface'
+import type { Reservation } from '../../interface/reservation'
 import type { SelectedSlot } from '../../interface/selectedSlot.interface'
 import type { BookingData } from '../../interface/bookingData.interface'
-import mockChargePoints from '../../data/mockChargePoints'
-import mockVehicles from '../../data/mockVehicles'
 import ChargePointList from '../../components/ChargePoint/ChargePointList'
 import Timetable from '../../components/Timetable/Timetable'
 import VehicleCard from '../../components/Vehicle/VehicleCard'
 import AddVehicleModal from '../../components/Modal/AddVehicleModal'
 import mockWeeklyBookingDates from '../../data/mockWeeklyBookingDates'
+import { fetchStationById } from '../../apis/stationApis'
+import { fetchChargePointsByStationId } from '../../apis/chargePointApi'
+import { fetchOwnVehicles } from '../../apis/vehicleApi'
+import { LocationPin as LocationPinIcon } from '@mui/icons-material'
+import { getReservation } from '../../apis/reservationApis'
 
 // Mock data cho các booking đã có
 const Booking = () => {
@@ -21,28 +23,30 @@ const Booking = () => {
   const navigate = useNavigate()
 
   const [station, setStation] = useState<Station | null>(null)
-  const [chargePoints] = useState<ChargePoint[]>(mockChargePoints)
-  const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles)
+  const [chargePoints, setChargePoints] = useState<ChargePoint[]>([])
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
 
   // Form state
   const [selectedChargePoint, setSelectedChargePoint] = useState<ChargePoint | null>(null)
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [selectedSlots, setSelectedSlots] = useState<SelectedSlot[]>([])
   const [selectedDate] = useState<string>(new Date().toISOString().split('T')[0])
-  const [selectedTime] = useState<string>('')
-  const [weeklyBookings] = useState<WeeklyBookingDates>(mockWeeklyBookingDates)
+  // const [selectedTime] = useState<string>('')
+  const [weeklyBookings, setWeeklyBookings] = useState<Reservation[]>([])
 
   // Modal state for adding new vehicle
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false)
-  const [newVehicle, setNewVehicle] = useState({
-    id: '',
-    name: '',
-    brand: '',
-    model: '',
-    year: new Date().getFullYear(),
-    batteryCapacity: 0,
-    connectorType: ''
-  })
+  const [newVehicle, setNewVehicle] = useState<AddVehicle>({
+    car_maker: '',
+    models: '',
+    license_plate: '',
+    battery_capacity_kwh: 0,
+    charging_power_kw: 0,
+    connector_type: null,
+    status: true
+  } as AddVehicle)
+
+  console.log('weeklyBookings', weeklyBookings)
 
   // Get week dates starting from selected date
   const getWeekDates = useMemo(() => {
@@ -64,26 +68,86 @@ const Booking = () => {
   }, [])
 
   // Get bookings for selected charge point and week
-  const weekBookings = useMemo(() => {
-    if (!selectedChargePoint || getWeekDates.length === 0 || !weeklyBookings) return {}
-    const bookingsByDate: WeeklyBookingDates = {}
+  const getWeekBookings = useMemo(() => {
+    if (!selectedChargePoint || getWeekDates.length === 0 || !weeklyBookings) return []
+    console.log('weeklyBookings', weeklyBookings)
+    console.log('selectedChargePoint', selectedChargePoint)
+    return weeklyBookings.filter((booking) => booking.charge_point_id === selectedChargePoint.id)
+  }, [selectedChargePoint, weeklyBookings, getWeekDates])
 
-    getWeekDates.forEach((date) => {
-      bookingsByDate[date] = weeklyBookings[date].filter((booking) => {
-        return booking.chargePointId === selectedChargePoint.id
-      })
-    })
-    return bookingsByDate
-  }, [selectedChargePoint, getWeekDates, weeklyBookings])
-
+  // Fetch station data
   useEffect(() => {
-    if (stationId) {
-      const foundStation = mockStations.find((s) => s.id === parseInt(stationId))
-      if (foundStation) {
-        setStation(foundStation)
+    const fetchStation = async () => {
+      try {
+        if (stationId) {
+          const response = await fetchStationById(stationId)
+          console.log('fetchStation response', response)
+          if (response.statusCode === 200) {
+            setStation(response.data)
+          }
+        }
+      } catch (error) {
+        console.log('error', error)
       }
     }
+    fetchStation()
   }, [stationId])
+
+  // Fetch charge points data
+  useEffect(() => {
+    const fetchChargePoints = async () => {
+      try {
+        if (stationId) {
+          const response = await fetchChargePointsByStationId(stationId)
+          console.log('fetchChargePoints response', response)
+          if (response.statusCode === 200) {
+            setChargePoints(response.data)
+          }
+        }
+      } catch (error) {
+        console.log('fetchChargePoints error', error)
+      }
+    }
+    fetchChargePoints()
+  }, [stationId])
+
+  // Fetch vehicles data
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        if (stationId) {
+          const response = await fetchOwnVehicles()
+          console.log('fetchVehicles response', response)
+          if (response.statusCode === 200) {
+            setVehicles(response.data)
+          }
+        }
+      } catch (error) {
+        console.log('fetchVehicles error', error)
+      }
+    }
+    fetchVehicles()
+  }, [stationId])
+
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        if (selectedChargePoint) {
+          console.log('selectedChargePoint', selectedChargePoint)
+          const response = await getReservation(selectedChargePoint.id)
+          console.log('fetchReservations response', response)
+          if (response.length > 0) {
+            console.log('response.data', response)
+            setWeeklyBookings(() => response)
+            console.log('weeklyBookings', weeklyBookings)
+          }
+        }
+      } catch (error) {
+        console.log('fetchReservations error', error)
+      }
+    }
+    fetchReservations()
+  }, [selectedChargePoint])
 
   const handleBooking = () => {
     if (!selectedChargePoint || !selectedVehicle || selectedSlots.length === 0) {
@@ -92,27 +156,23 @@ const Booking = () => {
     }
 
     const bookingData: BookingData = {
-      stationId: parseInt(stationId!),
-      chargePointId: selectedChargePoint.id,
-      vehicleId: selectedVehicle.id,
-      startDate: new Date(selectedDate),
-      startTime: selectedTime,
-      duration: selectedSlots.length
+      station: station!,
+      chargePoint: selectedChargePoint!,
+      vehicle: selectedVehicle!,
+      date: selectedDate,
+      slots: selectedSlots,
+      amount: calculateEstimatedCost()
     }
 
-    // Store booking data in sessionStorage to pass to payment page
-    sessionStorage.setItem('bookingData', JSON.stringify(bookingData))
-    sessionStorage.setItem('selectedStation', JSON.stringify(station))
-    sessionStorage.setItem('selectedChargePoint', JSON.stringify(selectedChargePoint))
-    sessionStorage.setItem('selectedVehicle', JSON.stringify(selectedVehicle))
+    console.log('bookingData', bookingData)
 
     // Navigate to payment page
-    navigate('/payment')
+    navigate('/payment', { state: bookingData })
   }
 
   const calculateEstimatedCost = () => {
     if (!selectedChargePoint) return 0
-    return selectedChargePoint.price * selectedChargePoint.power * selectedSlots.length
+    return selectedChargePoint.pricePerKwh * selectedChargePoint.maxPowerKw * selectedSlots.length
   }
 
   if (!station) {
@@ -127,18 +187,12 @@ const Booking = () => {
     <div className='container mx-auto px-4 py-8 max-w-6xl pt-16'>
       {/* Header */}
       <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-2'>Đặt lịch sạc xe</h1>
+        <h1 className='text-3xl font-bold text-gray-900 bold mb-2'>Đặt lịch sạc xe</h1>
         <div className='flex items-center text-gray-600'>
-          <svg className='w-5 h-5 mr-2' fill='currentColor' viewBox='0 0 20 20'>
-            <path
-              fillRule='evenodd'
-              d='M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z'
-              clipRule='evenodd'
-            />
-          </svg>
+          <LocationPinIcon className='w-5 h-5 mr-2 text-black-500' />
           <div>
-            <p className='font-semibold'>{station.name}</p>
-            <p className='text-sm'>{station.address}</p>
+            <b className='text-lg font-bold'>{station.name}</b> <br />
+            <b className='text-sm'>{station.address}</b>
           </div>
         </div>
       </div>
@@ -177,7 +231,7 @@ const Booking = () => {
                 {/* Timetable */}
                 <Timetable
                   getWeekDates={getWeekDates}
-                  weekBookings={weekBookings}
+                  weekBookings={getWeekBookings as Reservation[]}
                   selectedDate={selectedDate}
                   selectedSlots={selectedSlots}
                   setSelectedSlots={setSelectedSlots}
@@ -193,7 +247,11 @@ const Booking = () => {
               {vehicles.map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  onClick={() => setSelectedVehicle(vehicle)}
+                  onClick={() => {
+                    if (vehicle.status === true) {
+                      setSelectedVehicle(vehicle)
+                    }
+                  }}
                   className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
                     selectedVehicle?.id === vehicle.id
                       ? 'border-blue-500 bg-blue-50'
@@ -229,33 +287,36 @@ const Booking = () => {
 
               {selectedChargePoint && (
                 <div>
-                  <p className='text-sm text-gray-600'>Cổng sạc</p>
-                  <p className='font-medium'>
-                    {selectedChargePoint.name} ({selectedChargePoint.power} kW)
-                  </p>
-                </div>
-              )}
-
-              {selectedDate && (
-                <div>
-                  <p className='text-sm text-gray-600'>Ngày & Giờ</p>
-                  <p className='font-medium'>
-                    {new Date(selectedDate).toLocaleDateString('vi-VN')} - {selectedTime}
-                  </p>
+                  <b className='text-sm text-gray-600'>Cổng sạc: </b>
+                  <span className='font-medium'>{selectedChargePoint.identifier}</span>
                 </div>
               )}
 
               {selectedSlots.length > 0 && (
-                <div>
-                  <p className='text-sm text-gray-600'>Thời gian sạc</p>
-                  <p className='font-medium'>{selectedSlots.length} giờ</p>
-                </div>
+                <>
+                  <div>
+                    <b className='text-sm text-gray-600'>Ngày: </b>
+                    <span className='font-medium'>{new Date(selectedSlots[0].date).toLocaleDateString('vi-VN')}</span>
+                  </div>
+                  <div>
+                    <b className='text-sm text-gray-600'>Giờ: </b>
+                    <span className='font-medium'>
+                      {selectedSlots[0].start_time} - {selectedSlots[selectedSlots.length - 1].end_time}
+                    </span>
+                  </div>
+                  <div>
+                    <b className='text-sm text-gray-600'>Thời gian sạc: </b>
+                    <span className='font-medium'>{selectedSlots.length} giờ</span>
+                  </div>
+                </>
               )}
 
               {selectedVehicle && (
                 <div>
                   <p className='text-sm text-gray-600'>Xe</p>
-                  <p className='font-medium'>{selectedVehicle.name}</p>
+                  <p className='font-medium'>
+                    {selectedVehicle.car_maker} {selectedVehicle.license_plate}
+                  </p>
                 </div>
               )}
 
@@ -283,7 +344,6 @@ const Booking = () => {
           vehicles={vehicles}
           newVehicle={newVehicle}
           setVehicles={setVehicles}
-          setSelectedVehicle={setSelectedVehicle}
           setNewVehicle={setNewVehicle}
           setShowAddVehicleModal={setShowAddVehicleModal}
         />

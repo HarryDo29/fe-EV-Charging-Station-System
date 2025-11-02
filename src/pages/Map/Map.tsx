@@ -1,4 +1,4 @@
-import EVMap from '../../components/Map/Map'
+import EVMap from '../../components/EVMap/EVMap'
 import { useState, useEffect } from 'react'
 import type { Station } from '../../interface/station.interface'
 import type { Coordinates } from '../../interface/coordinate.interface'
@@ -8,7 +8,7 @@ import StationList from '../../components/Station/StationList'
 
 const Map = () => {
   const [location, setLocation] = useState<Coordinates | null>(null)
-  const [selectedStationId, setSelectedStationId] = useState<number | null>(null)
+  const [selectedStationId, setSelectedStationId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [isLoadingLocation, setIsLoadingLocation] = useState(true)
   const [searchStations, setSearchStations] = useState<Station[]>(mockStations)
@@ -56,7 +56,7 @@ const Map = () => {
   }
 
   // Xử lý khi người dùng chọn trạm sạc
-  const handleStationSelect = (stationId: number) => {
+  const handleStationSelect = (stationId: string) => {
     setSelectedStationId(stationId)
   }
 

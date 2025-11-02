@@ -13,6 +13,7 @@ import {
   Login as LoginIcon
 } from '@mui/icons-material'
 import RegisterModal from '../../components/Modal/RegisterModal'
+import useAuth from '../../context/AuthContext/useAuth'
 
 const features = [
   {
@@ -44,7 +45,7 @@ const features = [
 const AuthPage = () => {
   const navigate = useNavigate()
   const [showRegisterModal, setShowRegisterModal] = useState(false)
-
+  const { login, loginOAuth2 } = useAuth()
   // Login states
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -60,28 +61,14 @@ const AuthPage = () => {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  const handleSubmit = async () => {
+  const handleLogin = async () => {
     setError('')
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        console.log('Login successful:', data)
-        // Navigate to homepage after successful login
-        navigate('/')
-      } else {
-        setError(data.message || 'Đăng nhập thất bại')
-      }
+      await login(email, password)
+      // Navigate to homepage after successful login
+      navigate('/')
     } catch (err) {
       console.log('err', err)
       setError('Có lỗi xảy ra. Vui lòng thử lại sau.')
@@ -144,13 +131,13 @@ const AuthPage = () => {
     }
   }
 
-  const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google'
+  const handleLoginOAuth2 = () => {
+    loginOAuth2()
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSubmit()
+      handleLogin()
     }
   }
 
@@ -322,7 +309,7 @@ const AuthPage = () => {
                 </div>
 
                 <button
-                  onClick={handleSubmit}
+                  onClick={handleLogin}
                   disabled={isLoading || !email || !password}
                   className='w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
                 >
@@ -358,7 +345,7 @@ const AuthPage = () => {
 
               <button
                 type='button'
-                onClick={handleGoogleLogin}
+                onClick={handleLoginOAuth2}
                 className='w-full bg-white border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-sm hover:shadow'
               >
                 {/* Logo Google */}

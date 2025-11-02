@@ -14,7 +14,7 @@ const Search = ({
   query: string
   setQuery: (query: string) => void
   filteredStations: () => Station[]
-  setSelectedStationId: (stationId: number | null) => void
+  setSelectedStationId: (stationId: string | null) => void
   setSearchStations: (stations: Station[]) => void
 }) => {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null)
@@ -25,7 +25,7 @@ const Search = ({
         value={selectedStation}
         onChange={(value) => {
           setSelectedStation(value)
-          setSelectedStationId(value?.id || null)
+          setSelectedStationId(value?.id?.toString() || null)
         }}
       >
         <div className='relative'>

@@ -1,4 +1,5 @@
-import type { Station } from '../../interface/station.interface'
+import { calculateDistance } from '../../../data/mockStations'
+import type { Station } from '../../../interface/station.interface'
 
 interface StationCardProps {
   station: Station
@@ -66,11 +67,11 @@ const StationCard = ({ station, isSelected, onClick }: StationCardProps) => {
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 10V3L4 14h7v7l9-11h-7z' />
           </svg>
           <span>
-            {station.availableChargers || 0}/{station.totalChargers || 0} sẵn sàng
+            {station.availableChargPoints || 0}/{station.totalChargPoints || 0} sẵn sàng
           </span>
         </div>
 
-        {station.distance && (
+        {station.longitude && station.latitude && (
           <div className='flex items-center text-gray-600'>
             <svg className='h-4 w-4 mr-1' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
               <path
@@ -80,15 +81,15 @@ const StationCard = ({ station, isSelected, onClick }: StationCardProps) => {
                 d='M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'
               />
             </svg>
-            <span>{station.distance.toFixed(1)} km</span>
+            <span>{calculateDistance(station.latitude, station.longitude, 10.84102, 106.80941).toFixed(1)} km</span>
           </div>
         )}
       </div>
 
-      {station.price && (
+      {station.pricePerKwh && (
         <div className='mt-2 pt-2 border-t border-gray-200'>
           <p className='text-sm text-gray-600'>
-            Giá: <span className='font-semibold text-blue-600'>{station.price.toLocaleString()} đ/kWh</span>
+            Giá: <span className='font-semibold text-blue-600'>{station.pricePerKwh.toLocaleString()} VND/kWh</span>
           </p>
         </div>
       )}
