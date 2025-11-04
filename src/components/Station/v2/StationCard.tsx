@@ -8,7 +8,7 @@ import {
 } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import MapModal from '../../MapModal/MapModal'
+import MapModal from '../../Modal/MapModal'
 import type { Coordinates } from '../../../interface/coordinate.interface'
 
 const StationCard = (station: Station) => {

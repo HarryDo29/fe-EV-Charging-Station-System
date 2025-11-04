@@ -36,7 +36,12 @@ const ChargePointCard = ({ chargePoint, selectedChargePoint, setSelectedChargePo
   return (
     <div
       key={chargePoint.id}
-      onClick={() => isAvailable && setSelectedChargePoint(chargePoint)}
+      onClick={() => {
+        if (isAvailable) {
+          setSelectedChargePoint(chargePoint)
+          console.log('Selected chargePoint:', chargePoint.identifier)
+        }
+      }}
       className={`
         bg-white rounded-lg border-2 p-4 transition-all duration-200
         ${isSelected ? 'border-blue-500 shadow-md' : 'border-gray-200'}
@@ -47,7 +52,7 @@ const ChargePointCard = ({ chargePoint, selectedChargePoint, setSelectedChargePo
       <div className='flex justify-between items-center mb-3'>
         <div className='flex items-center gap-2'>
           <EvStationIcon className={`w-5 h-5 ${isSelected ? 'text-blue-600' : 'text-gray-600'}`} />
-          <h3 className='font-bold text-gray-900'>{chargePoint.identifer}</h3>
+          <h3 className='font-bold text-gray-900'>{chargePoint.identifier}</h3>
         </div>
         {/* Status */}
         <div className='mb-3'>

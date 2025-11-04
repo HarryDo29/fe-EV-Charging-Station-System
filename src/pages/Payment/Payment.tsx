@@ -4,16 +4,26 @@ import type { BookingData } from '../../interface/bookingData.interface'
 import { CreditCard } from '@mui/icons-material'
 import type { CreateReservation } from '../../interface/reservation'
 import type { CreateTransaction } from '../../interface/transaction.interface'
-import { TransactionMethod } from '../../constants/transactionMethod'
 import { TransactionType } from '../../constants/transactionType'
 import { createReservation as createReservationApi } from '../../apis/reservationApis'
 import { createOrder as createOrderApi } from '../../apis/orderApis'
 import { createTransaction as createTransactionApi } from '../../apis/transactionApis'
+import QrPaymentModal from '../../components/Modal/QrPaymentModal'
+
+export interface QrCodeUrl {
+  bin: string
+  accountNumber: string
+  accountName: string
+  description: string
+  amount: number
+}
 
 const Payment = () => {
   const navigate = useNavigate()
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
-
+  const [orderId, setOrderId] = useState<string | null>(null)
+  const [qrCodeUrl, setQrCodeUrl] = useState<QrCodeUrl | null>(null)
+  const [isOpenQrCodeModal, setIsOpenQrCodeModal] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
 
   const { state } = useLocation() as { state: BookingData }
@@ -28,6 +38,14 @@ const Payment = () => {
       return
     }
   }, [navigate, state])
+
+  const handleOpenQrCodeModal = () => {
+    setIsOpenQrCodeModal(true)
+  }
+
+  const handleCloseQrCodeModal = () => {
+    setIsOpenQrCodeModal(false)
+  }
 
   // handle create reservation and payment
   const handlePayment = async () => {
@@ -51,6 +69,7 @@ const Payment = () => {
       if (!reservation) {
         throw new Error('Failed to create reservation')
       }
+      setOrderId(reservation.data.id)
 
       // Create order
       console.log('reservation', reservation)
@@ -62,13 +81,22 @@ const Payment = () => {
       // Create transaction
       const createTransaction: CreateTransaction = {
         amount: bookingData.amount,
-        method: TransactionMethod.PAYOS,
-        type: TransactionType.PAY_CHARGING_FEE
+        type: TransactionType.PAY_CHARGING_FEE,
+        order_id: order.data.id
       }
       const transaction = await createTransactionApi(createTransaction)
       if (!transaction) {
         throw new Error('Failed to create transaction')
       }
+      console.log('transaction', transaction)
+      setQrCodeUrl({
+        bin: transaction.data.bin,
+        accountNumber: transaction.data.accountNumber,
+        accountName: transaction.data.accountName,
+        description: transaction.data.description,
+        amount: transaction.data.amount
+      })
+      handleOpenQrCodeModal()
     } catch (error) {
       console.error('Error creating reservation and payment:', error)
       setIsProcessing(false)
@@ -239,6 +267,15 @@ const Payment = () => {
           </div>
         </div> */}
       </div>
+
+      {orderId !== null && qrCodeUrl !== null && (
+        <QrPaymentModal
+          orderId={orderId}
+          qrCodeUrl={qrCodeUrl}
+          isOpenQrCodeModal={isOpenQrCodeModal}
+          onClose={handleCloseQrCodeModal}
+        />
+      )}
     </div>
   )
 }

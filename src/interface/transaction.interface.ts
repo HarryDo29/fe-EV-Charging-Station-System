@@ -4,8 +4,8 @@ import type { TransactionType } from '../constants/transactionType'
 
 export interface CreateTransaction {
   amount: number // VND
-  method: TransactionMethod
   type: TransactionType
+  order_id: string
 }
 
 export interface Transaction {
@@ -15,5 +15,6 @@ export interface Transaction {
   type: TransactionType
   method: TransactionMethod
   status: TransactionStatus
+  order_id: string
   date: string
 }

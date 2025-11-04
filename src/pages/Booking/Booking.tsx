@@ -45,7 +45,7 @@ const Booking = () => {
     status: true
   } as AddVehicle)
 
-  console.log('weeklyBookings', weeklyBookings)
+  // console.log('weeklyBookings', weeklyBookings)
 
   // Get week dates starting from selected date
   const getWeekDates = useMemo(() => {
@@ -65,14 +65,6 @@ const Booking = () => {
     }
     return weekDates
   }, [])
-
-  // Get bookings for selected charge point and week
-  const getWeekBookings = useMemo(() => {
-    if (!selectedChargePoint || getWeekDates.length === 0 || !weeklyBookings) return []
-    console.log('weeklyBookings', weeklyBookings)
-    console.log('selectedChargePoint', selectedChargePoint)
-    return weeklyBookings.filter((booking) => booking.charge_point_id === selectedChargePoint.id)
-  }, [selectedChargePoint, weeklyBookings, getWeekDates])
 
   // Fetch station data
   useEffect(() => {
@@ -107,6 +99,7 @@ const Booking = () => {
         console.log('fetchChargePoints error', error)
       }
     }
+
     fetchChargePoints()
   }, [stationId])
 
@@ -126,25 +119,29 @@ const Booking = () => {
       }
     }
     fetchVehicles()
-  }, [stationId, vehicles])
+  }, [stationId])
 
+  // Tự động fetch reservations khi selectedChargePoint thay đổi
   useEffect(() => {
     const fetchReservations = async () => {
       try {
         if (selectedChargePoint) {
-          console.log('selectedChargePoint', selectedChargePoint)
+          console.log('Fetching reservations for chargePointId:', selectedChargePoint.id)
           const response = await getReservation(selectedChargePoint.id)
           console.log('fetchReservations response', response)
           if (response.length > 0) {
-            console.log('response.data', response)
-            setWeeklyBookings(() => response)
-            console.log('weeklyBookings', weeklyBookings)
+            console.log('response.data At fetchReservations', response)
+            setWeeklyBookings(response)
+          } else {
+            // Reset weeklyBookings nếu không có dữ liệu
+            setWeeklyBookings([])
           }
         }
       } catch (error) {
         console.log('fetchReservations error', error)
       }
     }
+
     fetchReservations()
   }, [selectedChargePoint])
 
@@ -230,7 +227,7 @@ const Booking = () => {
                 {/* Timetable */}
                 <Timetable
                   getWeekDates={getWeekDates}
-                  weekBookings={getWeekBookings as Reservation[]}
+                  weekBookings={weeklyBookings}
                   selectedDate={selectedDate}
                   selectedSlots={selectedSlots}
                   setSelectedSlots={setSelectedSlots}

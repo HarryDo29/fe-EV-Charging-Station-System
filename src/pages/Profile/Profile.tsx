@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { bookingHistory } from '../../data/mockBookingHistory'
 import { transactions } from '../../data/mockTransaction'
 import { subscriptions } from '../../data/mockSubcriptions'
 import VehicleCard from '../../components/Vehicle/VehicleCard'
-import mockVehicles from '../../data/mockVehicles'
-import type { Vehicle } from '../../interface/vehicle.interface'
+import type { AddVehicle, Vehicle } from '../../interface/vehicle.interface'
 import AddVehicleModal from '../../components/Modal/AddVehicleModal'
 import { Avatar } from '@mui/material'
 import {
@@ -19,6 +18,7 @@ import {
 import ChargeSessionCard from '../../components/ChargeSession/ChargeSessionCard'
 import TransactionCard from '../../components/Transaction/TransactionCard'
 import { useCookies } from 'react-cookie'
+import { fetchOwnVehicles } from '../../apis/vehicleApi'
 
 const profileTabs = [
   { id: 'overview', icon: Person, label: 'Tổng quan' },
@@ -54,27 +54,40 @@ const Profile = () => {
   const [cookies, setCookie] = useCookies(['profile']) // _ is for removeCookie
   const tab = cookies.profile
   const [activeTab, setActiveTab] = useState(tab || 'overview')
-  const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles)
+  const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false)
-  const [newVehicle, setNewVehicle] = useState<Vehicle>({
-    id: '',
+  const [newVehicle, setNewVehicle] = useState<AddVehicle>({
     car_maker: '',
+    models: '',
     license_plate: '',
-    model: '',
     battery_capacity_kwh: 0,
     connector_type: null,
     charging_power_kw: 0,
     status: false
-  } as Vehicle)
+  } as AddVehicle)
 
-  console.log(cookies.profile)
+  // console.log(cookies.profile)
 
   // useEffect(() => {
   //   if (tab) {
   //     setActiveTab(tab as string)
   //   }
   // }, [tab])
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetchOwnVehicles()
+        if (response.statusCode === 200) {
+          setVehicles(response.data)
+        }
+      } catch (error) {
+        console.log('fetchVehicles error', error)
+      }
+    }
+    fetchVehicles()
+  }, [])
 
   const getColorClasses = (color: string) => {
     const colors = {
@@ -222,7 +235,6 @@ const Profile = () => {
           vehicles={vehicles}
           newVehicle={newVehicle}
           setVehicles={setVehicles}
-          setSelectedVehicle={setSelectedVehicle}
           setNewVehicle={setNewVehicle}
           setShowAddVehicleModal={setShowAddVehicleModal}
         />
@@ -475,23 +487,14 @@ const Profile = () => {
   )
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-50 via-sky-50 to-blue-50 pt-14'>
-      <div className='max-w-6xl mx-auto p-4 md:p-6'>
-        {/* Header */}
-        <div className='mb-8'>
-          <div className='flex items-center gap-3 mb-2'>
-            <div className='bg-gradient-to-br from-sky-600 to-blue-600 p-3 rounded-xl shadow-lg'>
-              <Person className='text-white' sx={{ fontSize: 32 }} />
-            </div>
-            <div>
-              <h1 className='text-4xl font-bold bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent'>
-                Trang Cá Nhân
-              </h1>
-              <p className='text-gray-600 text-lg'>Quản lý đặt lịch sạc và tài khoản của bạn</p>
-            </div>
-          </div>
-        </div>
+    <div className='min-h-screen bg-white pt-0'>
+      {/* Hero Header Section */}
+      <section className='relative bg-gradient-to-br from-sky-600 via-sky-500 to-blue-600 text-white overflow-hidden'>
+        <div className='absolute inset-0 bg-black opacity-10'></div>
+        <div className='relative container mx-auto px-6 py-12 pt-20'></div>
+      </section>
 
+      <div className='max-w-6xl mx-auto px-4 md:px-6 -mt-8 relative z-10'>
         {/* Tabs */}
         <div className='bg-white rounded-2xl shadow-xl mb-6 overflow-hidden border border-gray-200'>
           <div className='flex overflow-x-auto scrollbar-thin scrollbar-thumb-sky-200 scrollbar-track-gray-100'>
@@ -505,16 +508,14 @@ const Profile = () => {
                     setCookie('profile', tab.id)
                   }}
                   className={`relative flex items-center justify-center gap-3 px-6 py-5 font-semibold transition-all duration-300 whitespace-nowrap flex-1 group ${
-                    activeTab === tab.id
-                      ? 'bg-gradient-to-r from-sky-600 to-blue-600 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-sky-50 hover:text-sky-600'
+                    activeTab === tab.id ? 'bg-sky-600 shadow-lg' : 'text-gray-600 hover:bg-sky-50 hover:text-sky-600'
                   }`}
                 >
                   <TabIcon
                     className={`transition-transform duration-300 ${activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'}`}
                     sx={{ fontSize: 24 }}
                   />
-                  <span className='text-base'>{tab.label}</span>
+                  <span className='text-base font-bold text-black'>{tab.label}</span>
                   {activeTab === tab.id && (
                     <div className='absolute bottom-0 left-0 right-0 h-1 bg-white rounded-t-full'></div>
                   )}
@@ -525,7 +526,7 @@ const Profile = () => {
         </div>
 
         {/* Content */}
-        <div className='animate-fadeIn'>
+        <div className='animate-fadeIn pb-10'>
           {activeTab === 'overview' && renderOverview()}
           {activeTab === 'bookings' && renderBookingHistory()}
           {activeTab === 'transactions' && renderTransactions()}

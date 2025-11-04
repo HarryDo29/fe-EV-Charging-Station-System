@@ -16,25 +16,25 @@ const NavbarHeader = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
           </div>
         </Link>
         {/* Navbar Links */}
-        <ul className='flex space-x-4 mx-auto bg-white rounded-md p-3'>
-          <li>
-            <Link className='hover:text-sky-400 transition-colors' to='/'>
-              Home
+        <ul className='flex space-x-4 mx-auto bg-white rounded-full p-3 px-4'>
+          <li className='px-2'>
+            <Link className='hover:text-sky-400 transition-colors text-black' to='/'>
+              <b>Home</b>
             </Link>
           </li>
-          <li>
-            <Link className='hover:text-sky-400 transition-colors' to='/map'>
-              Booking
+          <li className='px-2'>
+            <Link className='hover:text-sky-400 transition-colors text-black' to='/map'>
+              <b>Booking</b>
             </Link>
           </li>
-          <li>
-            <Link className='hover:text-sky-400 transition-colors' to='/about'>
-              About
+          <li className='px-2'>
+            <Link className='hover:text-sky-400 transition-colors text-black' to='/about'>
+              <b>About</b>
             </Link>
           </li>
-          <li>
-            <Link className='hover:text-sky-400 transition-colors' to='/contact'>
-              Contact
+          <li className='px-2'>
+            <Link className='hover:text-sky-400 transition-colors text-black' to='/contact'>
+              <b>Contact</b>
             </Link>
           </li>
         </ul>
