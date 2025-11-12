@@ -9,9 +9,9 @@ import {
   Cloud,
   Payments
 } from '@mui/icons-material'
-import heroImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/hero-section.jpeg'
-import technologyImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/tinh-nang-cong-nghe.jpeg'
-import networkImage from '/Users/donhianh/Desktop/Code/EV-charging-system/fe-ev-charging-system/src/assets/Homepage/mang-luoi-phu-song.jpeg'
+import heroImage from '../../assets/Homepage/hero-section.jpeg'
+import technologyImage from '../../assets/Homepage/tinh-nang-cong-nghe.jpeg'
+import networkImage from '../../assets/Homepage/mang-luoi-phu-song.jpeg'
 import { useNavigate } from 'react-router-dom'
 
 const Homepage = () => {
