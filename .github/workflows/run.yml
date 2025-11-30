@@ -19,7 +19,7 @@ jobs:
           cat > .env << 'ENV_DELIMITER_xyz123'
           ${{ secrets.ENV_FILE }}
           ENV_DELIMITER_xyz123
-          echo "✅ File .env đã được tạo"
+          echo "✅ File .env đã được tạo ra"
 
       - name: Stop processes using port 5173
         run: |
