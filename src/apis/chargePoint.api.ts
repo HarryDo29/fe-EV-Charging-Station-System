@@ -1,4 +1,4 @@
-import api from './apiInstance'
+import api from './api.instance'
 
 // export const fetchChargePoints = async () => {
 //   const response = await api.get('/charge-point/get-all-charge-points')

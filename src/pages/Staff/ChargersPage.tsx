@@ -1,7 +1,7 @@
 /**
  * ChargersPage - Staff Charger Management
  * Displays list of chargers with filters and actions
- * 
+ *
  * INTEGRATION NOTES:
  * - Import this page in App.tsx route: /staff/chargers
  * - Uses DashboardLayout with role='staff' from existing components
@@ -12,8 +12,8 @@
 import React, { useState } from 'react'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import ChargerCard from '../../components/staff/ChargerCard'
-import ChargerTable from '../../components/staff/ChargerTable'
+import ChargerCard from '../../components/Staff/ChargerCard'
+import ChargerTable from '../../components/Staff/ChargerTable'
 import { mockChargers } from '../../mocks/staffMocks'
 import { Charger, ChargerStatus, ConnectorType } from '../../types/staff'
 import {
@@ -275,7 +275,11 @@ const ChargersPage: React.FC = () => {
 
           <FormControl size='small' fullWidth>
             <InputLabel>Connector</InputLabel>
-            <Select value={filterConnector} label='Connector' onChange={(e) => setFilterConnector(e.target.value as any)}>
+            <Select
+              value={filterConnector}
+              label='Connector'
+              onChange={(e) => setFilterConnector(e.target.value as any)}
+            >
               <MenuItem value='all'>Tất cả</MenuItem>
               <MenuItem value='CCS2'>CCS2</MenuItem>
               <MenuItem value='Type2'>Type2</MenuItem>
@@ -379,4 +383,3 @@ const ChargersPage: React.FC = () => {
 }
 
 export default ChargersPage
-

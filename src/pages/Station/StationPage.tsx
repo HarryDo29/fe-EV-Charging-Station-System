@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import PresentationCard from '../../components/Station/v2/PresentationCard'
 import { StationStatus } from '../../constants/stationStatus'
-import { mockStations } from '../../data/mockStations'
 import type { Station } from '../../interface/station.interface'
 import {
   FilterList as FilterListIcon,
@@ -10,13 +9,13 @@ import {
   RestartAlt as RestartAltIcon
 } from '@mui/icons-material'
 import { Pagination } from '@mui/material'
-import { fetchStations, fetchStationsByDistance } from '../../apis/stationApis'
+import { fetchStations, fetchStationsSorted } from '../../apis/station.api'
 import type { Coordinates } from '../../interface/coordinate.interface'
 
 const StationPage = () => {
   const [stations, setStations] = useState<Station[]>([])
   const [filter, setFilter] = useState<StationStatus | 'all'>('all')
-  const [sortBy, setSortBy] = useState<'name' | 'price' | 'rating' | 'distance'>('name')
+  const [sortBy, setSortBy] = useState<'name' | 'price' | 'rating' | null>(null)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState<number | null>(null)
   const stationsPerPage = 12
@@ -60,36 +59,45 @@ const StationPage = () => {
   useEffect(() => {
     const fetchStationsData = async () => {
       try {
-        const res = await fetchStations()
-        setStations(res.data)
-        setTotalPages(Math.ceil(res.data.length / stationsPerPage))
+        if (location) {
+          const res = await fetchStationsSorted(location.lat.toString(), location.lng.toString())
+          console.log('res fetchStationsSorted', res)
+          setStations(res.data)
+          setTotalPages(Math.ceil(res.data.length / stationsPerPage))
+        } else {
+          const res = await fetchStations()
+          console.log('res fetchStations', res)
+          setStations(res.data)
+          setTotalPages(Math.ceil(res.data.length / stationsPerPage))
+        }
       } catch (error) {
         console.log('error', error)
       }
     }
     fetchStationsData()
-  }, [])
+  }, [location])
 
   const firstStationIndex = (page - 1) * stationsPerPage
   const lastStationIndex = firstStationIndex + stationsPerPage
 
-  const getStationsNearest = async () => {
-    try {
-      const res = await fetchStationsByDistance(
-        Number(location?.lat.toFixed(4)) || 0,
-        Number(location?.lng.toFixed(4)) || 0
-      )
-      console.log('res get stations nearest', res.data)
-      setStations(res.data)
-      setTotalPages(Math.ceil(res.data.length / stationsPerPage))
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  // const getStationsNearest = async () => {
+  //   try {
+  //     const res = await fetchStationsByDistance(
+  //       Number(location?.lat.toFixed(4)) || 0,
+  //       Number(location?.lng.toFixed(4)) || 0
+  //     )
+  //     console.log('res get stations nearest', res.data)
+  //     setStations(res.data)
+  //     setTotalPages(Math.ceil(res.data.length / stationsPerPage))
+  //   } catch (error) {
+  //     console.log('error', error)
+  //   }
+  // }
 
   const filteredStations = stations
     .filter((station: Station) => filter === 'all' || station.status === filter)
     .sort((a: Station, b: Station) => {
+      if (!sortBy) return 0
       if (sortBy === 'name') return a.name.localeCompare(b.name, 'vi')
       if (sortBy === 'price') return (a.pricePerKwh || 0) - (b.pricePerKwh || 0)
       if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0)
@@ -98,7 +106,7 @@ const StationPage = () => {
 
   const handleResetFilters = () => {
     setFilter('all')
-    setSortBy('name')
+    setSortBy(null)
   }
 
   return (
@@ -136,8 +144,7 @@ const StationPage = () => {
             {[
               { value: 'name', label: 'Tên (A-Z)', icon: '🔤' },
               { value: 'price', label: 'Giá thấp nhất', icon: '💰' },
-              { value: 'rating', label: 'Đánh giá cao nhất', icon: '⭐' },
-              { value: 'distance', label: 'Cách gần nhất', icon: '🚗' }
+              { value: 'rating', label: 'Đánh giá cao nhất', icon: '⭐' }
             ].map((option) => (
               <label
                 key={option.value}
@@ -153,11 +160,7 @@ const StationPage = () => {
                   value={option.value}
                   checked={sortBy === option.value}
                   onChange={(e) => {
-                    if (option.value === 'distance') {
-                      getStationsNearest()
-                    } else {
-                      setSortBy(e.target.value as 'name' | 'price' | 'rating')
-                    }
+                    setSortBy(e.target.value as 'name' | 'price' | 'rating')
                   }}
                   className='w-4 h-4 text-indigo-600 focus:ring-2 focus:ring-indigo-500'
                 />
@@ -231,7 +234,7 @@ const StationPage = () => {
                   </div>
 
                   {/* Reset Button */}
-                  {(filter !== 'all' || sortBy !== 'name') && (
+                  {(filter !== 'all' || sortBy !== null) && (
                     <button
                       onClick={handleResetFilters}
                       className='w-full flex items-center justify-center gap-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105'
@@ -240,24 +243,6 @@ const StationPage = () => {
                       Đặt lại bộ lọc
                     </button>
                   )}
-                </div>
-              </div>
-
-              {/* Stats Card */}
-              <div className='mt-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-xl p-6 overflow-hidden sticky top-114 text-white'>
-                <h3 className='text-lg font-bold mb-4'>Thống kê</h3>
-                <div className='space-y-3'>
-                  <div className='flex justify-between items-center'>
-                    <span className='text-blue-100'>Tổng trạm:</span>
-                    <span className='font-bold text-xl'>{mockStations.length}</span>
-                  </div>
-                  <div className='flex justify-between items-center'>
-                    <span className='text-blue-100'>Đang hiển thị:</span>
-                    <span className='font-bold text-xl'>{filteredStations.length}</span>
-                  </div>
-                  <div className='border-t border-blue-400 pt-3'>
-                    <span className='text-sm text-blue-100'>Cập nhật lúc {new Date().toLocaleTimeString('vi-VN')}</span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -293,7 +278,7 @@ const StationPage = () => {
               <Pagination
                 page={page}
                 onChange={(_, value: number) => setPage(value)}
-                count={totalPages || 0}
+                count={sortBy !== null ? Math.ceil(filteredStations.length / stationsPerPage) : totalPages || 0}
                 variant='outlined'
                 color='primary'
                 shape='rounded'

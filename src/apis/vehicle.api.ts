@@ -1,5 +1,5 @@
 import type { AddVehicle } from '../interface/vehicle.interface'
-import api from './apiInstance'
+import api from './api.instance'
 
 export const addVehicle = async (vehicle: AddVehicle) => {
   const response = await api.post(`/vehicle/add-vehicle`, vehicle)

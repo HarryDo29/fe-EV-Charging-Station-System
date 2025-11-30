@@ -16,7 +16,7 @@ import {
   stopChargingSession,
   pauseChargingSession,
   resumeChargingSession
-} from '../../apis/chargingSessionApis'
+} from '../../apis/chargeSession.api'
 
 interface StationInfo {
   name: string

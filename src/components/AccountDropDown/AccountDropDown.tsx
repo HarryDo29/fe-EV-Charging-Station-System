@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../../context/AuthContext/useAuth'
-import { fetchLogout } from '../../apis/authApis'
+import { fetchLogout } from '../../apis/auth.api'
 
 const menuItems = [
   { icon: Person, label: 'Hồ sơ', url: '/profile', action: () => console.log('Xem hồ sơ') },

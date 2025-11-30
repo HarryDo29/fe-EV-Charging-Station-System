@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-import { bookingHistory } from '../../data/mockBookingHistory'
-import { transactions } from '../../data/mockTransaction'
+import { useEffect, useState, useRef } from 'react'
 import { subscriptions } from '../../data/mockSubcriptions'
 import VehicleCard from '../../components/Vehicle/VehicleCard'
 import type { AddVehicle, Vehicle } from '../../interface/vehicle.interface'
@@ -13,16 +11,27 @@ import {
   ChevronRight,
   BoltOutlined,
   CalendarTodayOutlined,
-  DiamondOutlined
+  DiamondOutlined,
+  VerifiedUser
 } from '@mui/icons-material'
 import ChargeSessionCard from '../../components/ChargeSession/ChargeSessionCard'
 import TransactionCard from '../../components/Transaction/TransactionCard'
 import { useCookies } from 'react-cookie'
-import { fetchOwnVehicles } from '../../apis/vehicleApi'
+import { fetchGetAccount, fetchUpdateProfile } from '../../apis/account.api'
+import type { DriverAccount } from '../../interface/driverAccount.interface'
+import type { Order } from '../../interface/order.interface'
+import type { Reservation } from '../../interface/reservation.interface'
+import type { Transaction } from '../../interface/transaction.interface'
+import { OrderStatus } from '../../constants/orderStatus'
+import { ReservationStatus } from '../../constants/reservationStatus'
+import { TransactionStatus } from '../../constants/transactionStatus'
+import { OTPModal } from '../../components/Modal/OTPModal'
+import { EditProfileModal, type FormValues } from '../../components/Modal/EditProfileModal'
+import { fetchSendOtp, fetchVerifyOtp } from '../../apis/auth.api'
 
 const profileTabs = [
   { id: 'overview', icon: Person, label: 'Tổng quan' },
-  { id: 'bookings', icon: CalendarTodayOutlined, label: 'Lịch đặt sạc' },
+  { id: 'reservations', icon: CalendarTodayOutlined, label: 'Lịch đặt sạc' },
   { id: 'transactions', icon: CreditCard, label: 'Giao dịch' },
   { id: 'subscriptions', icon: DiamondOutlined, label: 'Gói đăng ký' },
   { id: 'settings', icon: Notifications, label: 'Cài đặt' }
@@ -36,16 +45,10 @@ const menuItems = [
     color: 'blue'
   },
   {
-    icon: CreditCard,
-    label: 'Phương thức thanh toán',
-    desc: 'Quản lý thẻ và ví điện tử',
-    color: 'green'
-  },
-  {
-    icon: Notifications,
-    label: 'Cài đặt thông báo',
-    desc: 'Tùy chỉnh thông báo đặt lịch',
-    color: 'orange'
+    icon: VerifiedUser,
+    label: 'Xác minh tài khoản',
+    desc: 'Xác thực danh tính và tăng độ tin cậy',
+    color: 'purple'
   }
 ]
 
@@ -54,7 +57,12 @@ const Profile = () => {
   const [cookies, setCookie] = useCookies(['profile']) // _ is for removeCookie
   const tab = cookies.profile
   const [activeTab, setActiveTab] = useState(tab || 'overview')
+  const [account, setAccount] = useState<DriverAccount>()
+  const [orders, setOrders] = useState<Order[]>([])
+  const [reservations, setReservations] = useState<Reservation[]>([])
+  const [, setSubscription] = useState<[]>([])
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null)
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false)
   const [newVehicle, setNewVehicle] = useState<AddVehicle>({
@@ -67,35 +75,151 @@ const Profile = () => {
     status: false
   } as AddVehicle)
 
-  // console.log(cookies.profile)
-
-  // useEffect(() => {
-  //   if (tab) {
-  //     setActiveTab(tab as string)
-  //   }
-  // }, [tab])
+  // Edit Profile & OTP States
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+  const [showOtpVerifyModal, setShowOtpVerifyModal] = useState(false)
+  const [editedProfile, setEditedProfile] = useState<{
+    avatar_url?: string
+    full_name?: string
+    email?: string
+    phone_number?: string
+  }>({
+    avatar_url: account?.avatar_url || '',
+    full_name: account?.full_name || '',
+    email: account?.email || '',
+    phone_number: account?.phone_number || ''
+  })
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const otpRefs = useRef<HTMLInputElement[]>([])
 
   useEffect(() => {
-    const fetchVehicles = async () => {
+    const fetchAccount = async () => {
       try {
-        const response = await fetchOwnVehicles()
+        const response = await fetchGetAccount()
+        console.log('fetchAccount response', response)
         if (response.statusCode === 200) {
-          setVehicles(response.data)
+          setAccount(response.data)
+          setVehicles(response.data.vehicles)
+          setOrders(response.data.orders)
+          setReservations(response.data.reservations)
+          setSubscription(response.data.user_subscriptions)
+          setTransactions(response.data.transactions)
         }
       } catch (error) {
-        console.log('fetchVehicles error', error)
+        console.log('fetchAccount error', error)
       }
     }
-    fetchVehicles()
+    fetchAccount()
   }, [])
 
   const getColorClasses = (color: string) => {
     const colors = {
       blue: 'bg-blue-50 text-blue-600',
       green: 'bg-green-50 text-green-600',
-      orange: 'bg-orange-50 text-orange-600'
+      orange: 'bg-orange-50 text-orange-600',
+      purple: 'bg-purple-50 text-purple-600'
     }
     return colors[color as keyof typeof colors] || colors.blue
+  }
+
+  // Handle OTP input change
+  const handleOtpChange = (index: number, value: string) => {
+    if (value.length > 1) return // Only allow single digit
+
+    const newOtp = [...otp]
+    newOtp[index] = value
+    setOtp(newOtp)
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus()
+    }
+  }
+
+  // Handle OTP backspace
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus()
+    }
+  }
+
+  // Handle paste OTP
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const pastedData = e.clipboardData.getData('text').slice(0, 6)
+    const newOtp = [...otp]
+
+    for (let i = 0; i < pastedData.length; i++) {
+      if (/^\d$/.test(pastedData[i])) {
+        newOtp[i] = pastedData[i]
+      }
+    }
+
+    setOtp(newOtp)
+
+    // Focus last filled input or next empty one
+    const lastIndex = Math.min(pastedData.length, 5)
+    otpRefs.current[lastIndex]?.focus()
+  }
+
+  // Open Edit Profile Modal
+  const handleOpenEditProfile = () => {
+    setEditedProfile({
+      avatar_url: account?.avatar_url || '',
+      full_name: account?.full_name || '',
+      email: account?.email || '',
+      phone_number: account?.phone_number || ''
+    })
+    setShowEditProfileModal(true)
+  }
+
+  // Send OTP
+  const handleSendOtp = async () => {
+    try {
+      const response = await fetchSendOtp()
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // Open OTP Verification Modal
+  const handleOpenOtpVerify = () => {
+    setOtp(['', '', '', '', '', ''])
+    setShowOtpVerifyModal(true)
+    handleSendOtp()
+  }
+
+  // Submit Edit Profile
+  const handleSubmitEditProfile = async (values: FormValues) => {
+    try {
+      const response = await fetchUpdateProfile(values)
+      console.log(response)
+      if (response.statusCode === 200) {
+        setAccount({ ...(account as DriverAccount), ...values })
+        setShowEditProfileModal(false)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // Verify OTP
+  const handleVerifyOtp = async (passcode: string) => {
+    try {
+      const response = await fetchVerifyOtp(passcode)
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  // Submit OTP
+  const handleSubmitOtp = () => {
+    const otpCode = otp.join('')
+    console.log('OTP submitted:', otpCode)
+    setShowOtpVerifyModal(false)
+    handleVerifyOtp(otpCode)
   }
 
   const renderOverview = () => (
@@ -112,27 +236,27 @@ const Profile = () => {
           <div className='flex items-center space-x-6 mb-8'>
             <div className='relative'>
               <Avatar
-                src='/assets/Avata/avt_HarryDo.jpeg'
+                src={account?.avatar_url}
                 alt='harry.do'
                 sx={{ width: 96, height: 96, border: '4px solid white', boxShadow: '0 8px 16px rgba(0,0,0,0.2)' }}
               />
               <div className='absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white'></div>
             </div>
             <div className='flex-1'>
-              <h2 className='text-3xl md:text-4xl font-bold text-white mb-3'>Harry Do</h2>
+              <h2 className='text-3xl md:text-4xl font-bold text-white mb-3'>{account?.full_name}</h2>
               <div className='space-y-1'>
                 <p className='text-sky-100 flex items-center gap-2 text-sm md:text-base'>
                   <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
                     <path d='M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z' />
                     <path d='M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z' />
                   </svg>
-                  harry.do@example.com
+                  {account?.email}
                 </p>
                 <p className='text-sky-100 flex items-center gap-2 text-sm md:text-base'>
                   <svg className='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
                     <path d='M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z' />
                   </svg>
-                  0909 123 456
+                  {account?.phone_number || 'Không có'}
                 </p>
               </div>
             </div>
@@ -149,9 +273,12 @@ const Profile = () => {
                   +12% tháng này
                 </span>
               </div>
-              <p className='text-4xl font-bold text-gray-800 mb-1'>24</p>
+              <p className='text-4xl font-bold text-gray-800 mb-1'>
+                {orders.filter((order: Order) => order.order_status === OrderStatus.COMPLETED).length}
+              </p>
               <p className='text-sm text-gray-600 font-medium'>Tổng lượt sạc</p>
             </div>
+
             <div className='bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
               <div className='flex items-center justify-between mb-3'>
                 <div className='bg-blue-100 p-3 rounded-lg'>
@@ -159,9 +286,15 @@ const Profile = () => {
                 </div>
                 <span className='text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full'>Sắp tới</span>
               </div>
-              <p className='text-4xl font-bold text-gray-800 mb-1'>1</p>
+              <p className='text-4xl font-bold text-gray-800 mb-1'>
+                {
+                  reservations.filter((reservation: Reservation) => reservation.status === ReservationStatus.PENDING)
+                    .length
+                }
+              </p>
               <p className='text-sm text-gray-600 font-medium'>Lịch đã đặt</p>
             </div>
+
             <div className='bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
               <div className='flex items-center justify-between mb-3'>
                 <div className='bg-gradient-to-br from-yellow-100 to-orange-100 p-3 rounded-lg'>
@@ -242,7 +375,7 @@ const Profile = () => {
     </div>
   )
 
-  const renderBookingHistory = () => (
+  const renderReservationHistory = () => (
     <div className='space-y-4'>
       <div className='bg-gradient-to-r from-sky-50 to-blue-50 rounded-xl p-6 border border-sky-200'>
         <div className='flex items-center gap-3'>
@@ -251,13 +384,13 @@ const Profile = () => {
           </div>
           <div>
             <h3 className='text-lg font-bold text-gray-800'>Lịch sử đặt sạc</h3>
-            <p className='text-sm text-gray-600'>Tổng cộng {bookingHistory.length} lượt đặt lịch</p>
+            <p className='text-sm text-gray-600'>Tổng cộng {reservations.length} lượt đặt lịch</p>
           </div>
         </div>
       </div>
       <div className='space-y-3'>
-        {bookingHistory.map((booking) => (
-          <ChargeSessionCard key={booking.id} booking={booking} />
+        {reservations.map((reservation: Reservation) => (
+          <ChargeSessionCard key={reservation.id} reservation={reservation} />
         ))}
       </div>
     </div>
@@ -305,7 +438,7 @@ const Profile = () => {
             </div>
           </div>
           <p className='text-3xl font-bold text-green-600'>
-            {transactions.filter((t) => t.status === 'success').length}
+            {transactions.filter((t: Transaction) => t.status === TransactionStatus.SUCCESS).length}
           </p>
         </div>
         <div className='bg-white rounded-xl p-5 border-2 border-red-200 hover:border-red-300 hover:shadow-lg transition-all duration-300'>
@@ -434,35 +567,46 @@ const Profile = () => {
       </div>
 
       <div className='space-y-4'>
-        {menuItems.map((item, index) => {
-          const Icon = item.icon
-          return (
-            <button
-              key={index}
-              className='w-full bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-sky-300 hover:shadow-lg transition-all duration-300 text-left group'
-            >
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-4'>
-                  <div
-                    className={`w-14 h-14 rounded-xl flex items-center justify-center ${getColorClasses(item.color)} transition-all duration-300 group-hover:scale-110`}
-                  >
-                    <Icon sx={{ fontSize: 28 }} />
+        {menuItems
+          .filter((item, index) => {
+            // Ẩn tùy chọn "Xác minh tài khoản" (index 1) nếu đã được xác minh
+            if (index === 1 && account?.is_verified) {
+              return false
+            }
+            return true
+          })
+          .map((item, index) => {
+            const Icon = item.icon
+            const handleClick =
+              item.label === 'Chỉnh sửa thông tin cá nhân' ? handleOpenEditProfile : handleOpenOtpVerify
+            return (
+              <button
+                key={index}
+                onClick={handleClick}
+                className='w-full bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-sky-300 hover:shadow-lg transition-all duration-300 text-left group'
+              >
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-4'>
+                    <div
+                      className={`w-14 h-14 rounded-xl flex items-center justify-center ${getColorClasses(item.color)} transition-all duration-300 group-hover:scale-110`}
+                    >
+                      <Icon sx={{ fontSize: 28 }} />
+                    </div>
+                    <div className='flex-1'>
+                      <p className='font-bold text-gray-900 mb-1 text-lg group-hover:text-sky-600 transition-colors'>
+                        {item.label}
+                      </p>
+                      <p className='text-sm text-gray-500'>{item.desc}</p>
+                    </div>
                   </div>
-                  <div className='flex-1'>
-                    <p className='font-bold text-gray-900 mb-1 text-lg group-hover:text-sky-600 transition-colors'>
-                      {item.label}
-                    </p>
-                    <p className='text-sm text-gray-500'>{item.desc}</p>
-                  </div>
+                  <ChevronRight
+                    className='text-gray-400 group-hover:text-sky-600 group-hover:translate-x-2 transition-all duration-300'
+                    sx={{ fontSize: 28 }}
+                  />
                 </div>
-                <ChevronRight
-                  className='text-gray-400 group-hover:text-sky-600 group-hover:translate-x-2 transition-all duration-300'
-                  sx={{ fontSize: 28 }}
-                />
-              </div>
-            </button>
-          )
-        })}
+              </button>
+            )
+          })}
       </div>
 
       <div className='pt-4 flex justify-center'>
@@ -528,12 +672,35 @@ const Profile = () => {
         {/* Content */}
         <div className='animate-fadeIn pb-10'>
           {activeTab === 'overview' && renderOverview()}
-          {activeTab === 'bookings' && renderBookingHistory()}
+          {activeTab === 'reservations' && renderReservationHistory()}
           {activeTab === 'transactions' && renderTransactions()}
           {activeTab === 'subscriptions' && renderSubscriptions()}
           {activeTab === 'settings' && renderSettings()}
         </div>
       </div>
+
+      {/* Modals */}
+      {showEditProfileModal && (
+        <EditProfileModal
+          setShowEditProfileModal={setShowEditProfileModal}
+          profile={account as DriverAccount}
+          setEditedProfile={setEditedProfile}
+          handleSubmitEditProfile={handleSubmitEditProfile}
+        />
+      )}
+      {showOtpVerifyModal && (
+        <OTPModal
+          setShowOtpVerifyModal={setShowOtpVerifyModal}
+          account={account as DriverAccount}
+          otp={otp}
+          otpRefs={otpRefs}
+          handleOtpChange={handleOtpChange}
+          handleOtpKeyDown={handleOtpKeyDown}
+          handleOtpPaste={handleOtpPaste}
+          handleSubmitOtp={handleSubmitOtp}
+          handleSendOtp={handleSendOtp}
+        />
+      )}
     </div>
   )
 }

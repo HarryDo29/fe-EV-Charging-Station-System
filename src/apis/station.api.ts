@@ -1,14 +1,15 @@
-import api from './apiInstance'
+import api from './api.instance'
 import type { Station } from '../interface/station.interface'
 
 export const fetchStations = async (): Promise<{ data: Station[] }> => {
-  const response = await api.get('/station/get-all-stations')
+  const response = await api.get('/station')
   console.log('response', response)
   return response.data
 }
 
-export const fetchStationsByDistance = async (latitude: number, longitude: number): Promise<{ data: Station[] }> => {
-  const response = await api.get(`/station?latitude=${latitude}&longitude=${longitude}`)
+export const fetchStationsSorted = async (latitude: string, longitude: string) => {
+  const response = await api.get(`/station/sorted?latitude=${latitude}&longitude=${longitude}`)
+  console.log('response', response)
   return response.data
 }
 

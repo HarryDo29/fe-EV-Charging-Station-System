@@ -1,5 +1,5 @@
 import { ReservationStatus } from '../constants/reservationStatus'
-import type { WeeklyBookingDate } from '../interface/reservation'
+import type { WeeklyBookingDate } from '../interface/reservation.interface'
 
 const mockWeeklyBookings: WeeklyBookingDate[] = [
   // Thứ Hai, 13/10/2025

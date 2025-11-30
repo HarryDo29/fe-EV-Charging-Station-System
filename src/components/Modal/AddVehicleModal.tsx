@@ -1,7 +1,7 @@
 import type { AddVehicle, Vehicle } from '../../interface/vehicle.interface'
 import { ConnectorType } from '../../constants/connectorType'
 import { Close, LocalShipping, CalendarToday, Bolt, Stars, Power as PowerIcon } from '@mui/icons-material'
-import { addVehicle } from '../../apis/vehicleApi'
+import { addVehicle } from '../../apis/vehicle.api'
 
 interface AddVehicleModalProps {
   vehicles: Vehicle[]

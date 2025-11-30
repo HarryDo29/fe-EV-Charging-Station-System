@@ -2,13 +2,9 @@ import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { BookingData } from '../../interface/bookingData.interface'
 import { CreditCard } from '@mui/icons-material'
-import type { CreateReservation } from '../../interface/reservation'
-import type { CreateTransaction } from '../../interface/transaction.interface'
-import { TransactionType } from '../../constants/transactionType'
-import { createReservation as createReservationApi } from '../../apis/reservationApis'
-import { createOrder as createOrderApi } from '../../apis/orderApis'
-import { createTransaction as createTransactionApi } from '../../apis/transactionApis'
 import QrPaymentModal from '../../components/Modal/QrPaymentModal'
+import type { ReservationCheckOut } from '../../interface/checkOut.interface'
+import { checkOutApi } from '../../apis/checkOut.api'
 
 export interface QrCodeUrl {
   bin: string
@@ -57,44 +53,27 @@ const Payment = () => {
     }
     try {
       // Create reservation
-      const createReservation: CreateReservation = {
+      const reservationCheckOut: ReservationCheckOut = {
         reservation_day: bookingData.slots[0].date,
         start_time: bookingData.slots[0].start_time,
         end_time: bookingData.slots[bookingData.slots.length - 1].end_time,
         charge_point_id: bookingData.chargePoint.id.toString(),
-        vehicle_id: bookingData.vehicle.id.toString()
-      }
-      console.log('createReservation', createReservation)
-      const reservation = await createReservationApi(createReservation)
-      if (!reservation) {
-        throw new Error('Failed to create reservation')
-      }
-      setOrderId(reservation.data.id)
-
-      // Create order
-      console.log('reservation', reservation)
-      const order = await createOrderApi(reservation.data.id)
-      if (!order) {
-        throw new Error('Failed to create order')
+        vehicle_id: bookingData.vehicle.id.toString(),
+        amount: bookingData.amount
       }
 
-      // Create transaction
-      const createTransaction: CreateTransaction = {
-        amount: bookingData.amount,
-        type: TransactionType.PAY_CHARGING_FEE,
-        order_id: order.data.id
+      const checkOut = await checkOutApi(reservationCheckOut)
+      if (!checkOut) {
+        throw new Error('Failed to check out')
       }
-      const transaction = await createTransactionApi(createTransaction)
-      if (!transaction) {
-        throw new Error('Failed to create transaction')
-      }
-      console.log('transaction', transaction)
+      console.log('checkOut', checkOut)
+      setOrderId(checkOut.data.order_id)
       setQrCodeUrl({
-        bin: transaction.data.bin,
-        accountNumber: transaction.data.accountNumber,
-        accountName: transaction.data.accountName,
-        description: transaction.data.description,
-        amount: transaction.data.amount
+        bin: checkOut.data.payment_link.bin,
+        accountNumber: checkOut.data.payment_link.accountNumber,
+        accountName: checkOut.data.payment_link.accountName,
+        description: checkOut.data.payment_link.description,
+        amount: checkOut.data.payment_link.amount
       })
       handleOpenQrCodeModal()
     } catch (error) {

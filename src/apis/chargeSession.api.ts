@@ -1,4 +1,4 @@
-import api from './apiInstance'
+import api from './api.instance'
 
 // Interface for charging session
 export interface ChargingSessionRequest {
@@ -25,9 +25,7 @@ export interface ChargingSessionData {
 }
 
 // Verify OTP and start charging session
-export const verifyOTPAndStartCharging = async (
-  data: ChargingSessionRequest
-): Promise<ChargingSessionResponse> => {
+export const verifyOTPAndStartCharging = async (data: ChargingSessionRequest): Promise<ChargingSessionResponse> => {
   try {
     const response = await api.post('/charging-session/start', data)
     return response.data
@@ -71,7 +69,9 @@ export const resumeChargingSession = async (sessionId: string): Promise<{ messag
 }
 
 // Stop charging session
-export const stopChargingSession = async (sessionId: string): Promise<{ message: string; finalData: ChargingSessionData }> => {
+export const stopChargingSession = async (
+  sessionId: string
+): Promise<{ message: string; finalData: ChargingSessionData }> => {
   try {
     const response = await api.post(`/charging-session/${sessionId}/stop`)
     return response.data
@@ -91,4 +91,3 @@ export const requestChargingOTP = async (chargePointId: string): Promise<{ otp: 
     throw error
   }
 }
-

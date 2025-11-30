@@ -2,8 +2,8 @@ import React, { useEffect, useReducer, useRef } from 'react'
 import { useCookies } from 'react-cookie'
 import { AuthAction, authReducer, getInitialState } from './AuthReduce'
 import type { DriverAccount } from '../../interface/driverAccount.interface'
-import { fetchLogin } from '../../apis/authApis'
-import { fetchGetAccount } from '../../apis/accountApis'
+import { fetchLogin } from '../../apis/auth.api.ts'
+import { fetchGetAccount } from '../../apis/account.api.ts'
 import type { AuthResponse } from './AuthReduce.ts'
 
 interface AuthContextType {
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (state.driver_account) {
       setCookie('driver_account', JSON.stringify(state.driver_account), {
         path: '/',
-        maxAge: 15 * 60 * 1000
+        maxAge: 15 * 60 * 1000 // 15 minutes
       })
     } else {
       removeCookie('driver_account', { path: '/' })

@@ -157,8 +157,8 @@ const StationCard = (station: Station) => {
       {/* Card Footer */}
       <div className='border-t border-gray-100 p-4'>
         <button
-          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200'
-          disabled={station.status === StationStatus.UNAVAILABLE}
+          className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
+          disabled={station.status === StationStatus.UNAVAILABLE || station.status === StationStatus.MAINTENANCE}
           onClick={() => navigate(`/booking/${station.id}`)}
         >
           Đặt lịch sạc

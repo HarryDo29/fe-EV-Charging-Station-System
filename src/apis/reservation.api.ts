@@ -1,5 +1,5 @@
-import api from './apiInstance'
-import type { CreateReservation, Reservation } from '../interface/reservation'
+import api from './api.instance'
+import type { CreateReservation, Reservation } from '../interface/reservation.interface'
 
 export const createReservation = async (createReservation: CreateReservation) => {
   const response = await api.post('/station/reservation', createReservation)

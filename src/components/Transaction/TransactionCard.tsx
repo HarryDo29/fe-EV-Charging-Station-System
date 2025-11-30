@@ -1,6 +1,12 @@
+import { TransactionStatus } from '../../constants/transactionStatus'
 import type { Transaction } from '../../interface/transaction.interface'
 
 const TransactionCard = ({ trans }: { trans: Transaction }) => {
+  const formatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  })
+
   return (
     <div
       key={trans.id}
@@ -11,10 +17,14 @@ const TransactionCard = ({ trans }: { trans: Transaction }) => {
         <div className='flex items-start gap-4'>
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center text-xl flex-shrink-0 ${
-              trans.status === 'success' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+              trans.status === TransactionStatus.SUCCESS
+                ? 'bg-green-50 text-green-500'
+                : trans.status === TransactionStatus.FAILED
+                  ? 'bg-red-50 text-red-500'
+                  : 'bg-gray-50 text-gray-500'
             }`}
           >
-            {trans.status === 'success' ? '✓' : '✗'}
+            {trans.status === TransactionStatus.SUCCESS ? '✓' : '✗'}
           </div>
 
           <div className='flex-1'>
@@ -23,12 +33,12 @@ const TransactionCard = ({ trans }: { trans: Transaction }) => {
             <div className='flex items-center gap-2'>
               <span
                 className={`px-2 py-1 rounded text-xs font-medium ${
-                  trans.status === 'success'
+                  trans.status === TransactionStatus.SUCCESS
                     ? 'bg-green-50 text-green-700 border border-green-200'
                     : 'bg-red-50 text-red-700 border border-red-200'
                 }`}
               >
-                {trans.status === 'success' ? 'Thành công' : 'Thất bại'}
+                {trans.status === TransactionStatus.SUCCESS ? 'Thành công' : 'Thất bại'}
               </span>
               <span className='px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium'>{trans.method}</span>
             </div>
@@ -37,9 +47,9 @@ const TransactionCard = ({ trans }: { trans: Transaction }) => {
 
         <div className='text-right'>
           <p className={`text-2xl font-bold mb-1 ${trans.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {trans.amount}
+            {formatter.format(trans.amount)}
           </p>
-          <p className='text-xs text-gray-500'>Số dư: {trans.amount}</p>
+          {/* <p className='text-xs text-gray-500'>Số dư: {trans.amount}</p> */}
         </div>
       </div>
 
@@ -58,11 +68,11 @@ const TransactionCard = ({ trans }: { trans: Transaction }) => {
       </div>
 
       {/* Action */}
-      {trans.status === 'success' && (
+      {/* {trans.status === 'success' && (
         <div className='mt-4 pt-4 border-t border-gray-100'>
           <button className='text-sm text-blue-600 hover:text-blue-700 font-medium'>Xem chi tiết →</button>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

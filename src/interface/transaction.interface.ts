@@ -11,6 +11,7 @@ export interface CreateTransaction {
 export interface Transaction {
   id: string
   order_code: number
+  transaction_code: number
   amount: number // VND
   type: TransactionType
   method: TransactionMethod

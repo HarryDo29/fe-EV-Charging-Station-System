@@ -7,9 +7,19 @@ import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import SessionForm, { SessionFormData } from '../../components/staff/SessionForm'
+import SessionForm, { SessionFormData } from '../../components/Staff/SessionForm'
 import { mockChargers } from '../../mocks/staffMocks'
-import { Paper, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@mui/material'
+import {
+  Paper,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button
+} from '@mui/material'
 
 const staffSidebarItems = [
   { label: 'Dashboard', icon: <span>📊</span>, path: '/staff' },
@@ -111,7 +121,11 @@ const CreateSessionPage: React.FC = () => {
       {/* Success Dialog */}
       <Dialog open={successDialog.open} onClose={handleDialogClose} maxWidth='sm' fullWidth>
         <DialogTitle className='text-center'>
-          {successDialog.sessionType === 'draft' ? '📝 Đã lưu Draft' : successDialog.sessionType === 'scheduled' ? '📅 Đã đặt lịch' : '⚡ Đã khởi động'}
+          {successDialog.sessionType === 'draft'
+            ? '📝 Đã lưu Draft'
+            : successDialog.sessionType === 'scheduled'
+              ? '📅 Đã đặt lịch'
+              : '⚡ Đã khởi động'}
         </DialogTitle>
         <DialogContent>
           <DialogContentText className='text-center mb-4'>
@@ -152,4 +166,3 @@ const CreateSessionPage: React.FC = () => {
 }
 
 export default CreateSessionPage
-

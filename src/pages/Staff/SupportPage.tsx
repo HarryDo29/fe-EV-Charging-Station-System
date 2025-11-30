@@ -6,8 +6,8 @@
 import React, { useState } from 'react'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import TicketList from '../../components/staff/TicketList'
-import TicketConversation from '../../components/staff/TicketConversation'
+import TicketList from '../../components/Staff/TicketList'
+import TicketConversation from '../../components/Staff/TicketConversation'
 import { mockTickets, mockStaffUsers, getStaffById } from '../../mocks/staffMocks'
 import { SupportTicket, TicketMessage } from '../../types/staff'
 import { Box, Paper, Snackbar, Alert } from '@mui/material'
@@ -63,7 +63,7 @@ const SupportPage: React.FC = () => {
           ...t,
           messages: [...t.messages, newMessage],
           updatedAt: new Date().toISOString(),
-          status: t.status === 'open' ? 'in-progress' as const : t.status,
+          status: t.status === 'open' ? ('in-progress' as const) : t.status,
           assignedTo: t.assignedTo || currentStaff.id,
           assignedToName: t.assignedToName || currentStaff.name
         }
@@ -265,4 +265,3 @@ const SupportPage: React.FC = () => {
 }
 
 export default SupportPage
-

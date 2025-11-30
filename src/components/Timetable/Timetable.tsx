@@ -1,5 +1,5 @@
 import type { SelectedSlot } from '../../interface/selectedSlot.interface'
-import type { Reservation } from '../../interface/reservation'
+import type { Reservation } from '../../interface/reservation.interface'
 
 interface TimetableProps {
   getWeekDates: string[]

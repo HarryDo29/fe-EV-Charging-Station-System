@@ -1,4 +1,4 @@
-import api from './apiInstance'
+import api from './api.instance'
 
 export const fetchLogin = async (email: string, password: string) => {
   const response = await api.post('/auth/login', { email, password })
@@ -7,6 +7,16 @@ export const fetchLogin = async (email: string, password: string) => {
 
 export const fetchRegister = async (name: string, email: string, password: string) => {
   const response = await api.post('/auth/register', { name, email, password })
+  return response.data
+}
+
+export const fetchSendOtp = async () => {
+  const response = await api.post('/auth/send-passcode')
+  return response.data
+}
+
+export const fetchVerifyOtp = async (otp: string) => {
+  const response = await api.post('/auth/verify-email', { otp })
   return response.data
 }
 

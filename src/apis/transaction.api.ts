@@ -1,4 +1,4 @@
-import api from './apiInstance'
+import api from './api.instance'
 import type { CreateTransaction } from '../interface/transaction.interface'
 
 export const createTransaction = async (createTransaction: CreateTransaction) => {

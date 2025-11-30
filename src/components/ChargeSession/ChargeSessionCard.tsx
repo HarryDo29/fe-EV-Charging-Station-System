@@ -1,20 +1,25 @@
-import type { ExistingBooking } from '../../interface/existingBooking.interface'
+import type { Reservation } from '../../interface/reservation.interface'
+import { ReservationStatus } from '../../constants/reservationStatus'
 
-const ChargeSessionCard = ({ booking }: { booking: ExistingBooking }) => {
+const ChargeSessionCard = ({ reservation }: { reservation: Reservation }) => {
   return (
     <div
-      key={booking.id}
+      key={reservation.id}
       className='bg-white rounded-lg p-5 border border-gray-200 hover:border-blue-300 transition-colors'
     >
       <div className='flex items-center justify-between mb-3'>
-        <h3 className='text-lg font-semibold text-gray-900'>{booking.station}</h3>
-        {booking.status === 'completed' ? (
+        <h3 className='text-lg font-semibold text-gray-900'>{reservation.charge_point.station.name}</h3>
+        {reservation.status === ReservationStatus.COMPLETED ? (
           <span className='px-3 py-1 bg-green-50 text-green-600 text-sm font-medium rounded-md border border-green-200'>
             Hoàn thành
           </span>
-        ) : (
+        ) : reservation.status === ReservationStatus.PENDING ? (
           <span className='px-3 py-1 bg-blue-50 text-blue-600 text-sm font-medium rounded-md border border-blue-200'>
             Sắp tới
+          </span>
+        ) : (
+          <span className='px-3 py-1 bg-red-50 text-red-600 text-sm font-medium rounded-md border border-red-200'>
+            Đã hủy
           </span>
         )}
       </div>
@@ -23,23 +28,18 @@ const ChargeSessionCard = ({ booking }: { booking: ExistingBooking }) => {
         <div className='space-y-1 text-gray-600'>
           <div className='flex items-center gap-2'>
             <span>📅</span>
-            <span>{booking.date}</span>
+            <span>{reservation.reservation_day}</span>
             <span className='text-gray-400'>•</span>
             <span>🕐</span>
-            <span>{booking.startTime}</span>
+            <span>{reservation.start_time}</span>
             <span className='text-gray-400'>•</span>
             <span>🕐</span>
-            <span>{booking.endTime}</span>
+            <span>{reservation.end_time}</span>
           </div>
           <div className='flex items-center gap-2'>
             <span>⚡</span>
-            <span>Công suất: {booking.power} kWh</span>
+            <span>Công suất: {reservation.charge_point.maxPowerKw} kW</span>
           </div>
-        </div>
-
-        <div className='text-right'>
-          <p className='text-xs text-gray-500 mb-1'>Tổng tiền</p>
-          <p className='text-xl font-bold text-blue-600'>{booking.price}</p>
         </div>
       </div>
     </div>
