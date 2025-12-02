@@ -3,7 +3,8 @@ import axios from 'axios'
 import { fetchRefresh } from './auth.api'
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-const baseURL = import.meta.env.BASE_URL
+const baseURL = import.meta.env.VITE_BASE_URL
+console.log('baseURL', baseURL)
 
 // create axios instance
 const api = axios.create({
