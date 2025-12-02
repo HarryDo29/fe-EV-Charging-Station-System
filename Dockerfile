@@ -69,4 +69,4 @@ COPY --from=build /usr/src/app/dist ./dist
 EXPOSE 5173
 
 # Run the application.
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
