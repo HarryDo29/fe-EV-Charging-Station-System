@@ -14,6 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 1. Tạo file .env (Code của bạn rất chuẩn)
       - name: Create .env file from GitHub Secret
         run: |
           cat > .env << 'ENV_DELIMITER_xyz123'
@@ -21,44 +22,30 @@ jobs:
           ENV_DELIMITER_xyz123
           echo "✅ File .env đã được tạo"
 
-      - name: Stop processes using port 5173
-        run: |
-          echo "🔍 Checking port 5173..."
-          if lsof -ti:5173 > /dev/null 2>&1; then
-            echo "⚠️ Found process on port 5173, stopping..."
-            kill -9 $(lsof -ti:5173) || true
-            echo "✅ Process stopped"
-          else
-            echo "✅ Port 5173 is free"
-          fi
-        continue-on-error: true
-
+      # 2. Tắt container cũ (Tự động giải phóng port 5173)
       - name: Stop old containers
         run: docker compose down || true
         continue-on-error: true
 
+      # 3. Chạy container mới (Build lại với env mới)
       - name: Build and start new containers
         run: docker compose up -d --build
 
-      - name: Check container status
-        run: docker compose ps
-
+      # 4. Kiểm tra trạng thái
       - name: Verify app is running in Docker
         run: |
           echo "🔍 Verifying deployment....."
           sleep 5
+          # Kiểm tra xem có container nào đang Up không
           if docker compose ps | grep -q "Up"; then
             echo "✅ Docker containers are running"
-            echo ""
-            echo "📊 Container details:"
             docker compose ps
-            echo ""
-            echo "🌐 Port mapping:"
-            docker compose port server 5173 || echo "Port mapping check failed"
           else
             echo "❌ Docker containers are not running properly"
+            docker compose logs --tail=50 # Hiện log lỗi ngay để debug
             exit 1
           fi
 
-      - name: Show logs
-        run: docker compose logs --tail=50
+      # 5. Dọn dẹp rác (Quan trọng cho VPS)
+      - name: Cleanup old images
+        run: docker image prune -f
