@@ -12,10 +12,10 @@
 import React, { useState } from 'react'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import ChargerCard from '../../components/Staff/ChargerCard'
-import ChargerTable from '../../components/Staff/ChargerTable'
+import ChargerCard from '../../components/staff/ChargerCard'
+import ChargerTable from '../../components/staff/ChargerTable'
 import { mockChargers } from '../../mocks/staffMocks'
-import { Charger, ChargerStatus, ConnectorType } from '../../types/staff'
+import type { Charger, ChargerStatus, ConnectorType } from '../../types/staff'
 import {
   TextField,
   InputAdornment,
@@ -264,7 +264,7 @@ const ChargersPage: React.FC = () => {
 
           <FormControl size='small' fullWidth>
             <InputLabel>Trạng thái</InputLabel>
-            <Select value={filterStatus} label='Trạng thái' onChange={(e) => setFilterStatus(e.target.value as any)}>
+            <Select value={filterStatus} label='Trạng thái' onChange={(e) => setFilterStatus(e.target.value)}>
               <MenuItem value='all'>Tất cả</MenuItem>
               <MenuItem value='online'>Sẵn sàng</MenuItem>
               <MenuItem value='in-use'>Đang sử dụng</MenuItem>
@@ -278,7 +278,7 @@ const ChargersPage: React.FC = () => {
             <Select
               value={filterConnector}
               label='Connector'
-              onChange={(e) => setFilterConnector(e.target.value as any)}
+              onChange={(e) => setFilterConnector(e.target.value)}
             >
               <MenuItem value='all'>Tất cả</MenuItem>
               <MenuItem value='CCS2'>CCS2</MenuItem>

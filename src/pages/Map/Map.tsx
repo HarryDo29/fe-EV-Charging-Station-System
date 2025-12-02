@@ -2,16 +2,16 @@ import EVMap from '../../components/EVMap/EVMap'
 import { useState, useEffect } from 'react'
 import type { Station } from '../../interface/station.interface'
 import type { Coordinates } from '../../interface/coordinate.interface'
-import { mockStations } from '../../data/mockStations'
+// import { mockStations } from '../../data/mockStations'
 import Search from '../../components/Search/Search'
-import StationList from '../../components/Station/StationList'
+import StationList from '../../components/Station/v1/StationList'
 
 const Map = () => {
   const [location, setLocation] = useState<Coordinates | null>(null)
   const [selectedStationId, setSelectedStationId] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [isLoadingLocation, setIsLoadingLocation] = useState(true)
-  const [searchStations, setSearchStations] = useState<Station[]>(mockStations)
+  const [searchStations, setSearchStations] = useState<Station[]>([])
 
   // Lấy vị trí hiện tại của người dùng
   useEffect(() => {
@@ -51,8 +51,8 @@ const Map = () => {
   //filter stations
   const filteredStations = (): Station[] => {
     return query == ''
-      ? mockStations
-      : mockStations.filter((station) => station.name.toLowerCase().includes(query.toLowerCase()))
+      ? []
+      : searchStations.filter((station) => station.name.toLowerCase().includes(query.toLowerCase()))
   }
 
   // Xử lý khi người dùng chọn trạm sạc

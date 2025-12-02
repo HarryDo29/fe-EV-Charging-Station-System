@@ -1,7 +1,9 @@
 import api from './api.instance'
 
 export const fetchGetAccount = async () => {
+  console.log('api', api)
   const response = await api.get('/account')
+  console.log('response', response)
   return response.data
 }
 

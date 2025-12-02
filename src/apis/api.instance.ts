@@ -3,12 +3,12 @@ import axios from 'axios'
 import { fetchRefresh } from './auth.api'
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-// const baseURL = 'http://localhost:3000'
+const baseURL = import.meta.env.BASE_URL
 
 // create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // URL base
-  timeout: 10000, // 10 giây
+  baseURL: baseURL, // URL base
+  timeout: 100000, // 100 giây
   headers: {
     'Content-Type': 'application/json'
   },

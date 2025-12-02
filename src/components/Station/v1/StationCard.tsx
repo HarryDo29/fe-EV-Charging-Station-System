@@ -67,7 +67,7 @@ const StationCard = ({ station, isSelected, onClick }: StationCardProps) => {
             <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 10V3L4 14h7v7l9-11h-7z' />
           </svg>
           <span>
-            {station.availableChargPoints || 0}/{station.totalChargPoints || 0} sẵn sàng
+            {station.availableChargePoints || 0}/{station.totalChargePoints || 0} sẵn sàng
           </span>
         </div>
 

@@ -158,7 +158,7 @@ const Timetable = ({ getWeekDates, weekBookings, selectedDate, selectedSlots, se
                           isPastSlot
                             ? 'Slot đã qua'
                             : booking
-                              ? `Đã đặt - ${booking.vehicle_id}`
+                              ? `Đã đặt`
                               : isUserSelected
                                 ? 'Click để bỏ chọn'
                                 : 'Click để chọn slot'
