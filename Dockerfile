@@ -3,6 +3,15 @@
 
   WORKDIR /app
   
+  # Khai báo build arguments để nhận env vars từ docker compose/workflow
+  ARG VITE_BASE_URL
+  # Thêm các ARG khác nếu cần
+  # ARG VITE_API_KEY
+  
+  # Set environment variables (Vite sẽ đọc khi build)
+  ENV VITE_BASE_URL=$VITE_BASE_URL
+  # ENV VITE_API_KEY=$VITE_API_KEY
+  
   # Copy package.json và cài thư viện
   COPY package*.json ./
   RUN npm ci
