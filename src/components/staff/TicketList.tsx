@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react'
-import { SupportTicket, TicketStatus, TicketPriority } from '../../types/staff'
+import type { SupportTicket, TicketStatus, TicketPriority } from '../../types/staff'
 import {
   List,
   ListItem,
@@ -160,7 +160,7 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, selectedTicketId, onSe
         <div className='grid grid-cols-2 gap-2'>
           <FormControl size='small' fullWidth>
             <InputLabel>Trạng thái</InputLabel>
-            <Select value={filterStatus} label='Trạng thái' onChange={(e) => setFilterStatus(e.target.value as any)}>
+            <Select value={filterStatus} label='Trạng thái' onChange={(e) => setFilterStatus(e.target.value)}>
               <MenuItem value='all'>Tất cả</MenuItem>
               <MenuItem value='open'>Mới</MenuItem>
               <MenuItem value='in-progress'>Đang xử lý</MenuItem>
@@ -171,7 +171,7 @@ const TicketList: React.FC<TicketListProps> = ({ tickets, selectedTicketId, onSe
 
           <FormControl size='small' fullWidth>
             <InputLabel>Mức độ</InputLabel>
-            <Select value={filterPriority} label='Mức độ' onChange={(e) => setFilterPriority(e.target.value as any)}>
+            <Select value={filterPriority} label='Mức độ' onChange={(e) => setFilterPriority(e.target.value)}>
               <MenuItem value='all'>Tất cả</MenuItem>
               <MenuItem value='low'>Thấp</MenuItem>
               <MenuItem value='normal'>Bình thường</MenuItem>

@@ -7,7 +7,8 @@ import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import SessionForm, { SessionFormData } from '../../components/Staff/SessionForm'
+import SessionForm from '../../components/staff/SessionForm'
+import type { SessionFormData } from '../../components/staff/SessionForm'
 import { mockChargers } from '../../mocks/staffMocks'
 import {
   Paper,

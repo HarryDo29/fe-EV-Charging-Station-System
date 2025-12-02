@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // login oauth2
   const loginOAuth2 = () => {
     // Đây là URL của backend NestJS, không phải của Google
-    const backendGoogleLoginURL = 'http://localhost:3000/google/redirect'
+    const backendGoogleLoginURL = 'https://api.harrydo.xyz/google/redirect'
     // Chuyển hướng toàn bộ trang
     window.location.href = backendGoogleLoginURL
   }

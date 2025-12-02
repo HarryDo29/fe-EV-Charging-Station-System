@@ -3,7 +3,7 @@
  * Contains sample data for chargers, sessions, tickets, and staff users
  */
 
-import {
+import type {
   Charger,
   ChargingSession,
   SupportTicket,

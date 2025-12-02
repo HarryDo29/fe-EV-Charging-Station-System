@@ -4,8 +4,8 @@
  */
 
 import React from 'react'
-import { Charger } from '../../types/staff'
-import { Chip, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
+import type { Charger } from '../../types/staff'
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import BoltIcon from '@mui/icons-material/Bolt'
 import ThermostatIcon from '@mui/icons-material/Thermostat'

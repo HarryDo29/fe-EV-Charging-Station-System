@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { Charger } from '../../types/staff'
+import type { Charger } from '../../types/staff'
 import {
   Table,
   TableBody,

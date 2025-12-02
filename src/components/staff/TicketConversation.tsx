@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react'
-import { SupportTicket, TicketMessage, QuickResponse, TicketStatus } from '../../types/staff'
+import type { SupportTicket, TicketMessage, QuickResponse } from '../../types/staff'
 import {
   Box,
   Typography,
@@ -200,7 +200,7 @@ const TicketConversation: React.FC<TicketConversationProps> = ({
 
       {/* Messages */}
       <Box className='flex-1 overflow-y-auto p-4 space-y-4'>
-        {ticket.messages.map((msg, index) => (
+        {ticket.messages.map((msg) => (
           <Box
             key={msg.id}
             className={`flex ${msg.from === 'staff' && !msg.isInternal ? 'justify-end' : 'justify-start'}`}
@@ -279,10 +279,7 @@ const TicketConversation: React.FC<TicketConversationProps> = ({
                   >
                     Đính kèm
                   </Button>
-                  <Button
-                    size='small'
-                    onClick={(e) => setQuickResponseAnchor(e.currentTarget)}
-                  >
+                  <Button size='small' onClick={(e) => setQuickResponseAnchor(e.currentTarget)}>
                     Phản hồi nhanh
                   </Button>
                   <FormControlLabel

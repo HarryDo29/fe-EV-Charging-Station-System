@@ -145,7 +145,7 @@ export default function EVMap({ location, stations, selectedStationId, onStation
                 </p>
                 <p>
                   <span className='font-semibold'>Trạm sạc: </span>
-                  {station.availableChargPoints || 0}/{station.totalChargPoints}
+                  {station.availableChargePoints || 0}/{station.totalChargePoints}
                 </p>
               </div>
             </div>

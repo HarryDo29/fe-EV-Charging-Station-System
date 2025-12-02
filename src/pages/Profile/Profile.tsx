@@ -78,7 +78,7 @@ const Profile = () => {
   // Edit Profile & OTP States
   const [showEditProfileModal, setShowEditProfileModal] = useState(false)
   const [showOtpVerifyModal, setShowOtpVerifyModal] = useState(false)
-  const [editedProfile, setEditedProfile] = useState<{
+  const [, setEditedProfile] = useState<{
     avatar_url?: string
     full_name?: string
     email?: string
@@ -568,7 +568,7 @@ const Profile = () => {
 
       <div className='space-y-4'>
         {menuItems
-          .filter((item, index) => {
+          .filter((_, index) => {
             // Ẩn tùy chọn "Xác minh tài khoản" (index 1) nếu đã được xác minh
             if (index === 1 && account?.is_verified) {
               return false

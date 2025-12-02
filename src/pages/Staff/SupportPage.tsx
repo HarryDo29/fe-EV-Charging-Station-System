@@ -6,10 +6,12 @@
 import React, { useState } from 'react'
 import DashboardLayout from '../../components/Dashboard/DashboardLayout'
 import Sidebar from '../../components/Dashboard/Sidebar'
-import TicketList from '../../components/Staff/TicketList'
-import TicketConversation from '../../components/Staff/TicketConversation'
-import { mockTickets, mockStaffUsers, getStaffById } from '../../mocks/staffMocks'
-import { SupportTicket, TicketMessage } from '../../types/staff'
+import TicketList from '../../components/staff/TicketList'
+import TicketConversation from '../../components/staff/TicketConversation'
+import { mockTickets } from '../../mocks/staffMocks'
+import { mockStaffUsers } from '../../mocks/staffMocks'
+import { getStaffById } from '../../mocks/staffMocks'
+import type { SupportTicket, TicketMessage } from '../../types/staff'
 import { Box, Paper, Snackbar, Alert } from '@mui/material'
 
 const staffSidebarItems = [
