@@ -5,6 +5,8 @@ services:
     # Tự đặt tên image
     image: ev-charging-frontend:latest
     container_name: ev_frontend
+    env_file:
+      - .env
     build:
       context: . # (Hoặc ./frontend nếu là monorepo)
       dockerfile: Dockerfile
